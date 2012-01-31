@@ -8,7 +8,6 @@ class Ga < ActiveRecord::Base
     profile = Garb::Management::Profile.all.detect{|p| p.table_id == params[:profile_id].to_str}
     # profile = Garb::Profile.all.last
     report = Garb::Report.new(profile, :start_date => start_date(params), :end_date => end_date(params), :limit => params[:limit].to_s, :offset => params[:offset].to_s)
-    # report = Garb::Report.new(profile, :start_date => Date.civil(2012, 12, 27), :end_date => Date.civil(2012, 1, 27), :limit => params[:limit].to_s, :offset => params[:offset].to_s)
     report.metrics params[:metrics]
     report.dimensions params[:dimensions]
     if params[:sort] == 'desc'

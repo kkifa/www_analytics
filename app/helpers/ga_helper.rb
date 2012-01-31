@@ -9,7 +9,7 @@ module GaHelper
                         ['Content', ['exitPagePath', 'landingPagePath', 'pagePath', 'pageTitle', 'secondPagePath']],
                         ['Internal', ['searchKeyword']],
                         ['Nav', ['nextPagePath', 'previousPagePath']],
-                        ['Campaign', ['keyword', 'medium', 'referralPath', 'source']]
+                        ['Campaign', ['campaign','keyword', 'medium', 'referralPath', 'source']]
                       ]  
   end
   

@@ -38,7 +38,8 @@
           = select :profile, :sort, %w[asc desc], { :index => nil, :selected => @stuff[:sort]}
           %br
 
-          = submit_tag "Submit" 
+          .button
+            = submit_tag "Submit" 
       
   %fieldset
     .results
@@ -48,7 +49,11 @@
             %th
               listing data
             %th
+              referral path
+            %th
               page views
+            %th
+              medium
             %th
               unique page views
           - for result in @results
@@ -56,10 +61,15 @@
               %td
                 = result.second_page_path
               %td
+                = result.referral_path
+              %td
                 = result.pageviews
+              %td
+                = result.medium
               %td
                 = result.unique_pageviews
         %br
 
 = debug @stuff
 = debug params
+= debug @results
