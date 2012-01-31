@@ -1,0 +1,23 @@
+%fieldset
+  .results
+    - if @results 
+      %table
+        %tr
+          %th
+            listing data
+          %th
+            page views
+          %th
+            unique page views
+        - for result in @results
+          %tr
+            %td
+              = result.second_page_path
+            %td
+              = result.pageviews
+            %td
+              = result.unique_pageviews
+      %br
+
+= debug @stuff
+= debug params
