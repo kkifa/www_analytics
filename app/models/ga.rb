@@ -2,7 +2,9 @@ class Ga < ActiveRecord::Base
 
   require 'rubygems'
   require 'garb'
-  Garb::Session.login('windermerega@gmail.com', 'alecbaldwin')
+  USER = Rails.application.config.analytics_login[:user]
+  PASSWORD = Rails.application.config.analytics_login[:password]
+  Garb::Session.login(USER, PASSWORD)
   
   def self.query(params = nil) 
     profile = Garb::Management::Profile.all.detect{|p| p.table_id == params[:profile_id].to_str}
