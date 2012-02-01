@@ -4,7 +4,7 @@ class GaController < ApplicationController
 
   def report   
     @stuff = {}
-    @title = "Windermere analytics"
+    @title = "Windermere analytics test report"
     unless params[:profile].nil?
       @results = Ga.query(params[:profile])
       @stuff = params[:profile]

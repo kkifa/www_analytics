@@ -2,14 +2,6 @@ class Ga < ActiveRecord::Base
 
   require 'rubygems'
   require 'garb'
-  # module GoogleAnalytics
-  #   class Test
-  #     extend Garb::Model
-
-  #     metrics :exits, :pageviews
-  #     dimensions :page_path
-  #   end
-  # end
   USER = Rails.application.config.analytics_login[:user]
   PASSWORD = Rails.application.config.analytics_login[:password]
   Garb::Session.login(USER, PASSWORD)
