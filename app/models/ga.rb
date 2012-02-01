@@ -2,6 +2,14 @@ class Ga < ActiveRecord::Base
 
   require 'rubygems'
   require 'garb'
+  # module GoogleAnalytics
+  #   class Test
+  #     extend Garb::Model
+
+  #     metrics :exits, :pageviews
+  #     dimensions :page_path
+  #   end
+  # end
   USER = Rails.application.config.analytics_login[:user]
   PASSWORD = Rails.application.config.analytics_login[:password]
   Garb::Session.login(USER, PASSWORD)
@@ -9,14 +17,21 @@ class Ga < ActiveRecord::Base
   def self.query(params = nil) 
     profile = Garb::Management::Profile.all.detect{|p| p.table_id == params[:profile_id].to_str}
     # profile = Garb::Profile.all.last
-    report = Garb::Report.new(profile, :start_date => start_date(params), :end_date => end_date(params), :limit => params[:limit].to_s, :offset => params[:offset].to_s)
+    report = Garb::Report.new(profile, 
+                              :start_date => start_date(params), 
+                              :end_date => end_date(params), 
+                              :limit => params[:limit].to_s, 
+                              :offset => params[:offset].to_s
+                              )
     report.metrics params[:metrics]
     report.dimensions params[:dimensions]
     if params[:sort] == 'desc'
       sort =  params[:metrics].first
       report.sort sort.to_sym.desc
-    end    
-    report.results
+    end
+    # report.results()
+    GoogleAnalytics::Test.results(profile, :filters => {:page_path.eql => '/', :medium.contains => "facebook"})
+    # Test.results(profile)
   end
 
   def self.profiles

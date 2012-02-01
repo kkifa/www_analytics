@@ -15,31 +15,32 @@
           %br
           = label :profile, "end date:"
           = date_select :profile, :end_date , {:default => @end_date }  
-        .block_2
+        .block_2{:style => "padding: 10px;"}
       
-        .span6.columns
-          = label :profile, "dimensions:"
-          = select(:profile, :dimensions, grouped_options_for_select(dimensions_list, @stuff[:dimensions]), {},{:multiple => true, :size => 10})
-      
-          %br
-          = label :profile, "metrics:"
-          = select(:profile, :metrics, grouped_options_for_select(metrics_list, @stuff[:metrics]), {},{:multiple => true, :size => 10})
-          %br
-          
-          = label :profile, "limit:" 
-          = select :profile, :limit, %w[10 25 50 100 500 1000], { :index => nil, :selected => @stuff[:limit]}
-          %br
+          .span4.columns.pull-left
+            = label :profile, "dimensions:"
+            = select(:profile, :dimensions, grouped_options_for_select(dimensions_list, @stuff[:dimensions]), {},{:multiple => true, :size => 10})
+        
+          .span4.columns.pull-left
+            = label :profile, "metrics:"
+            = select(:profile, :metrics, grouped_options_for_select(metrics_list, @stuff[:metrics]), {},{:multiple => true, :size => 10})
+            %br
+            
+          .span4.columns.pull-left
+            = label :profile, "limit:" 
+            = select :profile, :limit, %w[10 25 50 100 500 1000], { :index => nil, :selected => @stuff[:limit]}
+            %br
 
-          = label :profile, "offset:"
-          = select :profile, :offset, %w[1 10 25 50 100 500 1000], { :index => nil, :selected => @stuff[:offset]}
-          %br
+            = label :profile, "offset:"
+            = select :profile, :offset, %w[1 10 25 50 100 500 1000], { :index => nil, :selected => @stuff[:offset]}
+            %br
 
-          = label :profile, "sort:"
-          = select :profile, :sort, %w[asc desc], { :index => nil, :selected => @stuff[:sort]}
-          %br
+            = label :profile, "sort:"
+            = select :profile, :sort, %w[asc desc], { :index => nil, :selected => @stuff[:sort]}
+            %br
 
-          .button
-            = submit_tag "Submit" 
+        .button{:style => "clear:both; float: right, margin-top: 20px"}
+          = submit_tag "Submit" 
       
   %fieldset
     .results
@@ -59,7 +60,7 @@
           - for result in @results
             %tr
               %td
-                = result.second_page_path
+                = truncate(result.second_page_path)
               %td
                 = result.referral_path
               %td
