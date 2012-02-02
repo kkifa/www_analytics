@@ -167,7 +167,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bootstrap-sass
+  bootstrap-sass (~> 1.4.4)
   capybara
   coffee-rails (~> 3.1.1)
   cucumber-rails
