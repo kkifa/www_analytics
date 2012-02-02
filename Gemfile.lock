@@ -31,6 +31,8 @@ GEM
       multi_json (~> 1.0)
     ansi (1.4.1)
     arel (2.2.1)
+    bootstrap-sass (1.4.4)
+      sass-rails (~> 3.1)
     builder (3.0.0)
     capybara (1.1.2)
       mime-types (>= 1.16)
@@ -165,6 +167,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bootstrap-sass
   capybara
   coffee-rails (~> 3.1.1)
   cucumber-rails
