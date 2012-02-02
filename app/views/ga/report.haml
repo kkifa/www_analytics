@@ -72,5 +72,6 @@
         %br
 
 = debug @stuff
-= debug params
-= debug @results
+- if defined? @results.fields
+  = debug @results.fields
+= debug @results.first

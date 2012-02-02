@@ -7,22 +7,24 @@ class Ga < ActiveRecord::Base
   Garb::Session.login(USER, PASSWORD)
   
   def self.query(params = nil) 
-    profile = Garb::Management::Profile.all.detect{|p| p.table_id == params[:profile_id].to_str}
+    profile = Garb::Management::Profile.all.detect{|p| p.table_id == params[:profile_id].to_str} || Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     # profile = Garb::Profile.all.last
-    report = Garb::Report.new(profile, 
-                              :start_date => start_date(params), 
-                              :end_date => end_date(params), 
-                              :limit => params[:limit].to_s, 
-                              :offset => params[:offset].to_s
-                              )
-    report.metrics params[:metrics]
-    report.dimensions params[:dimensions]
-    if params[:sort] == 'desc'
-      sort =  params[:metrics].first
-      report.sort sort.to_sym.desc
-    end
+    # report = Garb::Report.new(profile, 
+    #                           :start_date => start_date(params), 
+    #                           :end_date => end_date(params), 
+    #                           :limit => params[:limit].to_s, 
+    #                           :offset => params[:offset].to_s
+    #                           )
+    # report.metrics params[:metrics]
+    # report.dimensions params[:dimensions]
+    # if params[:sort] == 'desc'
+    #   sort =  params[:metrics].first
+    #   report.sort sort.to_sym.desc
+    # end
     # report.results()
-    GoogleAnalytics::Test.results(profile, :filters => {:page_path.eql => '/', :medium.contains => "facebook"})
+    # GoogleAnalytics::Test.results(profile, :filters => {:page_path.eql => '/', :medium.contains => "facebook"})
+    GoogleAnalytics::AgentListings.results(profile, :limit => 10, :filters => [{:page_path.contains => "\/\d{7,}(\?refer=map)?$"}, {:page_path.contains => "^\/listing(s)?"} ])
+    # GoogleAnalytics::AgentListings.results(profile, :filters => {:page_path.contains => ""})
     # Test.results(profile)
   end
 
@@ -40,5 +42,9 @@ class Ga < ActiveRecord::Base
   def self.end_date(params = nil)
     end_date = Date.civil(params[:"end_date(1i)"].to_i,params[:"end_date(2i)"].to_i,params[:"end_date(3i)"].to_i)
   end
-  
+  class OpenStruct
+    def fields
+      @table.keys
+    end
+  end 
 end
