@@ -1,4 +1,4 @@
-.content.span12.columns
+.content.span16.columns
   %fieldset
     %legend
       Choose a profile & date range
@@ -42,36 +42,21 @@
           .button{:style => "clear:both; float: right, margin-top: 20px"}
             = submit_tag "Submit" 
       
-  %fieldset
-    .results
-      - if @results 
-        %table.span10.columns
+  - if @columns
+    %fieldset
+      .results
+        %table.span12.columns
           %tr
-            %th
-              listing data
-            %th
-              referral path
-            %th
-              page views
-            %th
-              medium
-            %th
-              unique page views
+            - for column in @columns
+              %th
+                = column.to_s.gsub("_", ' ')
           - for result in @results
             %tr
+            - for column in @columns
               %td
-                = truncate(result.second_page_path)
-              %td
-                = result.referral_path
-              %td
-                = result.pageviews
-              %td
-                = result.medium
-              %td
-                = result.unique_pageviews
-        %br
+                = result.send(column)
 
 = debug @stuff
-- if defined? @results.fields
-  = debug @results.fields
+- if defined? @results.first.fields
+  = debug @results.first.fields
 = debug @results.first

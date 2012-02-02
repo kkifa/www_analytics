@@ -11,6 +11,7 @@ class GaController < ApplicationController
       @start_date = Ga.start_date(params[:profile])
       @end_date = Ga.end_date(params[:profile])
     end
+    @columns = @results.first.fields
   end
   def agents   
     @stuff = {}
