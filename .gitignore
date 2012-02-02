@@ -14,6 +14,13 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+*.orig
 
 #ignore swp ext
 *.swp
+
+# Ignore RubyMine project setup
+/.idea
+
+# Ignore RVM setup
+/.rvmrc

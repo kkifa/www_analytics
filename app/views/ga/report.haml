@@ -56,7 +56,6 @@
               %td
                 = result.send(column)
 
-= debug @stuff
-- if defined? @results.first.fields
+- if defined? @columns
   = debug @results.first.fields
-= debug @results.first
+  = debug @results.first
