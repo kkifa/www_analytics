@@ -17,3 +17,9 @@
 
 #ignore swp ext
 *.swp
+
+# Ignore RubyMine project setup
+/.idea
+
+# Ignore RVM setup
+/.rvmrc
