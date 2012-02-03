@@ -22,7 +22,7 @@ class Ga < ActiveRecord::Base
     #   report.sort sort.to_sym.desc
     # end
     # report.results()
-    GoogleAnalytics.const_get(params[:report].capitalize).results(profile, :sort => :unique_pageviews.desc, :limit => 100, :filters => [{:page_path.contains => "\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?"}])
+    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile, :sort => :unique_pageviews.desc, :limit => 100, :filters => [{:page_path.contains => "\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?"}])
   end
 
   def self.profiles
@@ -39,6 +39,10 @@ class Ga < ActiveRecord::Base
   def self.end_date(params = nil)
     end_date = Date.civil(params[:"end_date(1i)"].to_i,params[:"end_date(2i)"].to_i,params[:"end_date(3i)"].to_i)
   end
+end
+private
+def param_to_class(report)
+  report.split.collect {|x| x.capitalize}.join
 end
 module Fields
   def fields
