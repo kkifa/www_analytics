@@ -20,7 +20,13 @@ module GaHelper
                     ]
   end
   def reports_list
-    report_list = [ 'test', 'agent listing' ]
+    report_list = []
+    Dir.foreach [Rails.root.to_s, 'lib/google_analytics'].join('/') do |file|
+      unless file[0] == "."
+        report_list << file.split(".").first.gsub("_", " ")
+      end
+    end
+    return report_list 
   end
   
 end
