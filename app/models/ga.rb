@@ -7,7 +7,7 @@ class Ga < ActiveRecord::Base
   Garb::Session.login(USER, PASSWORD)
   
   def self.query(params = nil) 
-    profile = Garb::Management::Profile.all.detect{|p| p.table_id == params[:profile_id].to_str} || Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
+    profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     # profile = Garb::Profile.all.last
     # report = Garb::Report.new(profile, 
     #                           :start_date => start_date(params), 
@@ -24,7 +24,10 @@ class Ga < ActiveRecord::Base
     # report.results()
     # GoogleAnalytics::Test.results(profile, :filters => {:page_path.eql => '/', :medium.contains => "facebook"})
     # GoogleAnalytics::AgentListings.results(profile, :limit => 10, :filters => [{:page_path.contains => "\/\d{7,}(\?refer=map)?$"}, {:page_path.contains => "^\/listing(s)?"} ])
-    GoogleAnalytics::AgentListings.results(profile, :limit => 10, :filters => [{:page_path.contains => "\/\d{7,}(\?refer=map)?$"}])
+    # GoogleAnalytics::AgentListings.results(profile, :limit => 10, :filters => [{:page_path.contains => "\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?"}])
+    if params[:report] == "test"
+      GoogleAnalytics::Test.results(profile, :sort => :unique_pageviews.desc, :limit => 100, :filters => [{:page_path.contains => "\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?"}])
+    end
     # GoogleAnalytics::AgentListings.results(profile, :filters => {:page_path.contains => ""})
     # Test.results(profile)
   end
@@ -44,11 +47,11 @@ class Ga < ActiveRecord::Base
     end_date = Date.civil(params[:"end_date(1i)"].to_i,params[:"end_date(2i)"].to_i,params[:"end_date(3i)"].to_i)
   end
 end
-  module Fields
-    def fields
-      @table.keys
-    end
+module Fields
+  def fields
+    @table.keys
   end
-  class OpenStruct
-    include Fields
-  end 
+end
+class OpenStruct
+  include Fields
+end 

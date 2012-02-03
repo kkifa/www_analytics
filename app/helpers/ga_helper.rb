@@ -19,5 +19,8 @@ module GaHelper
                       ['Content', ['uniquePageviews']]
                     ]
   end
+  def reports_list
+    report_list = [ 'test', 'agent listing' ]
+  end
   
 end

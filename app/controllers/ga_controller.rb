@@ -5,13 +5,10 @@ class GaController < ApplicationController
   def report   
     @stuff = {}
     @title = "Windermere analytics test report"
-    unless params[:profile].nil?
-      @results = Ga.query(params[:profile])
-      @stuff = params[:profile]
-      @start_date = Ga.start_date(params[:profile])
-      @end_date = Ga.end_date(params[:profile])
+    unless params[:report].nil?
+      @results = Ga.query(params[:report])
+      @columns = @results.first.fields
     end
-    @columns = @results.first.fields
   end
   def agents   
     @stuff = {}

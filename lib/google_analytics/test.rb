@@ -2,7 +2,7 @@ module GoogleAnalytics
   class Test
     extend Garb::Model
 
-    metrics :exits, :pageviews, :unique_pageviews
-    dimensions :page_path, :medium, :referral_path, :second_page_path
+    dimensions  :page_path_level_4, :referral_path, :source
+    metrics  :pageviews, :unique_pageviews
   end
 end
