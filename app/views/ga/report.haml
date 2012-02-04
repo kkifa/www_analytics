@@ -64,3 +64,64 @@
 - if defined? @columns
   = debug @results.first.fields
   = debug @results.first
+
+  #chart_bar
+  #chart_pie
+  %script{:type => 'text/javascript'}
+
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', {'packages':['corechart']});
+    google.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+    var listing_views = [
+    -#- for result in @results
+    -#  - unless result.second_page_path == '/' || result.second_page_path == '(not set)'
+    -#    - listing_id = result.second_page_path
+    -#    - listing_id.slice!(0)
+    -#    = "['#{listing_id}' , #{result.pageviews}],"
+    ];
+
+    // Create the data table for Site Visits.
+    var title = 'Views by Listing ID';
+    var data_site_visits = new google.visualization.DataTable();
+    data_site_visits.addColumn('string', 'Listing');
+    data_site_visits.addColumn('number', 'Views');
+    data_site_visits.addRows( listing_views );
+
+    // Set chart options
+    var options = {'title': title, 'width':400, 'height':300 };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.BarChart(document.getElementById('chart_bar'));
+    var chart2 = new google.visualization.PieChart(document.getElementById('chart_pie'));
+    chart.draw(data_site_visits, options);
+    chart2.draw(data_site_visits, options);
+
+    google.visualization.events.addListener(chart2, 'select', function() {
+    var selection = chart2.getSelection();
+    var message = '';
+    for (var i = 0; i < selection.length; i++) {
+    var item = selection[i];
+    if (item.row != null && item.column != null) {
+    var str = data_site_visits.getFormattedValue(item.row, item.column);
+    message += '{row:' + item.row + ',column:' + item.column + '} = ' + str + '\n';
+    } else if (item.row != null) {
+    var str = data_site_visits.getFormattedValue(item.row, 0);
+    message += '{row:' + item.row + ', column:none}; value (col 0) = ' + str + '\n';
+    } else if (item.column != null) {
+    var str = data_site_visits.getFormattedValue(0, item.column);
+    message += '{row:none, column:' + item.column + '}; value (row 0) = ' + str + '\n';
+    }
+    }
+    if (message == '') {
+    message = 'nothing';
+    }
+    console.log( 'You selected ' + message );
+    });
+    }
+-#= debug @stuff
+-#- if defined? @results.fields
+-#  = debug @results.fields
+-#= debug @results.first
