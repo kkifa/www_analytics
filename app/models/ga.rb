@@ -22,7 +22,10 @@ class Ga < ActiveRecord::Base
     #   report.sort sort.to_sym.desc
     # end
     # report.results()
-    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile, :sort => :unique_pageviews.desc, :limit => 100, :filters => [{:page_path.contains => "\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?"}])
+
+    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters =>  [{:source.contains => 'seattlepi.com'},{ :page_path.contains => "10277928"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listing([10277928, 17582, 10191776, 9779425]) )
+    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters =>  { :page_path.contains => "10277928"} )
   end
 
   def self.profiles
@@ -41,9 +44,20 @@ class Ga < ActiveRecord::Base
   end
 end
 private
+
 def param_to_class(report)
   report.split.collect {|x| x.capitalize}.join
 end
+
+def filter_by_agent_listing(listing_ids)
+  filters = []
+  for listing_id in listing_ids
+    # filters << {:page_path.contains => listing_id, :page_path.contains => "\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?"}
+    filters << {:page_path.contains => listing_id}
+  end
+  return filters
+end
+
 module Fields
   def fields
     @table.keys
