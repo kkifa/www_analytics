@@ -1,4 +1,6 @@
 .content.span16.columns
+  .pull-right{:style => "margin-top: -20px;"}
+    = image_tag "koolaid-good.png"
   %fieldset
     %h1
       CHOOSE A REPORT
@@ -63,7 +65,7 @@
 
 - if defined? @columns
   = debug @results.first.fields
-  = debug @results
+  = debug @results.first
 
   #chart_bar
   #chart_pie

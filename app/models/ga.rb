@@ -24,8 +24,8 @@ class Ga < ActiveRecord::Base
     # report.results()
 
     # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '9779425'},{ :page_path.contains => "10277928"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
-    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listing(["10277928", "10191776", "9779425"]) )
-    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile, :filters =>  { :page_path.contains => "9779425"} )
+    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listing(["10277928", "10191776", "9779425"]) )
+    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile, :filters =>  { :page_path.contains => "9779425"} )
     # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile)#, :filters =>  { :page_path.contains => "10277928"} )
   end
 

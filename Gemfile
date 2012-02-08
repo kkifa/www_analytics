@@ -15,7 +15,7 @@ gem 'sqlite3'
 # gem 'garb', :git => "https://github.com/cgunther/garb.git" #log in error
 gem 'garb', :git => "https://github.com/cgunther/garb.git", :ref => "ef3fc65015" #works wiht f'd up reporst 
 # gem 'garb', :git =>"https://github.com/KentonWhite/garb.git"#fucked up reports
-gem 'xml-simple'
+# gem 'xml-simple'
 # gem 'legato'
 
 # Gems used only for assets and not required
