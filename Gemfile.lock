@@ -1,7 +1,7 @@
 GIT
-  remote: https://github.com/seomoz/garb.git
-  revision: 35cd69273830c442bbad0b399b56fefc349cbbef
-  ref: 35cd692
+  remote: https://github.com/cgunther/garb.git
+  revision: ef3fc65015b5b71d628ac7f37a6889fba33e268a
+  ref: ef3fc65015
   specs:
     garb (0.9.2)
       activesupport (>= 2.2.0)
@@ -166,6 +166,7 @@ GEM
     uglifier (1.2.2)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
+    xml-simple (1.1.1)
     xpath (0.1.4)
       nokogiri (~> 1.3)
 
@@ -186,3 +187,4 @@ DEPENDENCIES
   sqlite3
   turn (= 0.8.2)
   uglifier (>= 1.0.3)
+  xml-simple

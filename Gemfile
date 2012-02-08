@@ -6,9 +6,16 @@ gem 'rails', '3.1.3'
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
-gem 'garb', :git => "https://github.com/seomoz/garb.git", :ref => "35cd692"
 # gem 'garb'
-# gem 'garb', :git => "https://github.com/frew/garb.git"
+# gem 'garb', :git => "https://github.com/seomoz/garb.git" # log in erro
+# gem 'garb', :git => "https://github.com/seomoz/garb.git", :ref => "35cd692" # log in erro
+# gem 'garb', :git => "https://github.com/frew/garb.git"#client error
+# gem 'garb', :git => "https://github.com/frew/garb.git", :ref => "926434db25" #client error
+# gem 'garb', :git => "https://github.com/glasner/garb.git"
+# gem 'garb', :git => "https://github.com/cgunther/garb.git" #log in error
+gem 'garb', :git => "https://github.com/cgunther/garb.git", :ref => "ef3fc65015" #works wiht f'd up reporst 
+# gem 'garb', :git =>"https://github.com/KentonWhite/garb.git"#fucked up reports
+gem 'xml-simple'
 # gem 'legato'
 
 # Gems used only for assets and not required

@@ -3,11 +3,12 @@ class Ga < ActiveRecord::Base
   require 'garb'
   USER = Rails.application.config.analytics_login[:user]
   PASSWORD = Rails.application.config.analytics_login[:password]
-  Garb::Session.login(USER, PASSWORD )
+  Garb::Session.login(USER, PASSWORD)
   
   def self.query(params = nil) 
+    # profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
-    # profile = Garb::Profile.all.last
+    # profile = Garb::Management::Profile.all.first
     # report = Garb::Report.new(profile, 
     #                           :start_date => start_date(params), 
     #                           :end_date => end_date(params), 
@@ -22,9 +23,10 @@ class Ga < ActiveRecord::Base
     # end
     # report.results()
 
-    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters =>  [{:page_path.contains => '10191776'},{ :page_path.contains => "10277928"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '9779425'},{ :page_path.contains => "10277928"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
     # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listing(["10277928", "10191776", "9779425"]) )
-    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters =>  { :page_path.contains => "10277928"} )
+    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile, :filters =>  { :page_path.contains => "9779425"} )
+    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile)#, :filters =>  { :page_path.contains => "10277928"} )
   end
 
   # def self.profiles
