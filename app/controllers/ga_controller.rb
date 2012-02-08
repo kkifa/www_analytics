@@ -1,6 +1,6 @@
 class GaController < ApplicationController
 
-  before_filter :profiles_list
+  # before_filter :profiles_list
 
   def report   
     @stuff = {}

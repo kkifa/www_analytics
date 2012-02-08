@@ -1,10 +1,9 @@
 class Ga < ActiveRecord::Base
-
   require 'rubygems'
   require 'garb'
   USER = Rails.application.config.analytics_login[:user]
   PASSWORD = Rails.application.config.analytics_login[:password]
-  Garb::Session.login(USER, PASSWORD)
+  Garb::Session.login(USER, PASSWORD )
   
   def self.query(params = nil) 
     profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
@@ -23,17 +22,17 @@ class Ga < ActiveRecord::Base
     # end
     # report.results()
 
-    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters =>  [{:source.contains => 'seattlepi.com'},{ :page_path.contains => "10277928"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
-    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listing([10277928, 17582, 10191776, 9779425]) )
-    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters =>  { :page_path.contains => "10277928"} )
+    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters =>  [{:page_path.contains => '10191776'},{ :page_path.contains => "10277928"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listing(["10277928", "10191776", "9779425"]) )
+    # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters =>  { :page_path.contains => "10277928"} )
   end
 
-  def self.profiles
-    profiles = Garb::Profile.all
-    profiles_list = []
-    profiles.each {|p| profiles_list.push [p.table_id,  p.title + ' (' + p.account_name.upcase + ')' ] }
-    profiles = profiles_list.sort_by {|k,v| v }
-  end
+  # def self.profiles
+  #   profiles = Garb::Management::Profile.all
+  #   profiles_list = []
+  #   profiles.each {|p| profiles_list.push [p.table_id,  p.title + ' (' + p.account_name.upcase + ')' ] }
+  #   profiles = profiles_list.sort_by {|k,v| v }
+  # end
 
   def self.start_date(params = nil)
     start_date = Date.civil(params[:"start_date(1i)"].to_i,params[:"start_date(2i)"].to_i,params[:"start_date(3i)"].to_i)
