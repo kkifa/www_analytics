@@ -8,46 +8,14 @@
       .form-stacked
         = label :report, "report"
         = select :report, :report, reports_list(), {}
+        %br
+        = label :agent, "Search by agent"
+        = select :agent, :agent, agents_list()
+        %br
+        = label :listing, "Search for a listing from URL"
+        = text_field :listing, :listing
+        %br
         = submit_tag "Submit"
-    -# = form_tag :controller => "ga", :action => "report" do 
-      .form-stacked
-        .span6.columns{style: "margin: 10px"}
-          = label :profile, "select:"
-          = select :profile, :profile_id, @profiles.collect {|k, v| [truncate(v, length: 40), k]},  {:include_blank => true, :selected => @stuff[:profile_id]}
-
-        .block_1{style: "background-color: lime; margin: 10px; padding: 10px;"}
-          = label :profile, "start date:"
-          = date_select :profile, :start_date, {:default => @start_date}
-          %br
-          %br
-          = label :profile, "end date:"
-          = date_select :profile, :end_date , {:default => @end_date }  
-        .block_2{:style => "padding: 10px;"}
-      
-          .span4.columns.pull-left
-            = label :profile, "dimensions:"
-            = select(:profile, :dimensions, grouped_options_for_select(dimensions_list, @stuff[:dimensions]), {},{:multiple => true, :size => 10})
-        
-          .span4.columns.pull-left
-            = label :profile, "metrics:"
-            = select(:profile, :metrics, grouped_options_for_select(metrics_list, @stuff[:metrics]), {},{:multiple => true, :size => 10})
-            %br
-            
-          .span4.columns.pull-left
-            = label :profile, "limit:" 
-            = select :profile, :limit, %w[10 25 50 100 500 1000], { :index => nil, :selected => @stuff[:limit]}
-            %br
-
-            = label :profile, "offset:"
-            = select :profile, :offset, %w[1 10 25 50 100 500 1000], { :index => nil, :selected => @stuff[:offset]}
-            %br
-
-            = label :profile, "sort:"
-            = select :profile, :sort, %w[asc desc], { :index => nil, :selected => @stuff[:sort]}
-            %br
-
-          .button{:style => "clear:both; float: right, margin-top: 20px"}
-            = submit_tag "Submit" 
       
   - if @columns
     %fieldset
