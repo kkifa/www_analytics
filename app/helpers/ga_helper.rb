@@ -30,14 +30,8 @@ module GaHelper
   end
 
   def agents_list
-    agent_list = 
-      [
-        ["agent 1", 1 ],
-        ["agent 2", 2 ],
-        ["agent 3", 3 ],
-        ["agent 4", 4 ],
-        ["agent 5", 5 ],
-      ]
+    office = WmsSvcConsumer::Models::Office.find(7939473)
+    agents = office.agents.map{|agent| [agent.display_name, agent.user_id]}
   end
   
 end
