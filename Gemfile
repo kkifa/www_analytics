@@ -17,6 +17,7 @@ gem 'garb', :git => "https://github.com/cgunther/garb.git", :ref => "ef3fc65015"
 # gem 'garb', :git =>"https://github.com/KentonWhite/garb.git"#fucked up reports
 # gem 'xml-simple'
 # gem 'legato'
+gem 'wms_svc_consumer', :git => 'git@github.com:Windermere/wms_svc_consumer.git', :ref => "81ed001"
 
 # Gems used only for assets and not required
 # in production environments by default.

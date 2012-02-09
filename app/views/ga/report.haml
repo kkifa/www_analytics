@@ -3,10 +3,10 @@
     = image_tag "koolaid-good.png"
   %fieldset
     %h1
-      CHOOSE A REPORT
+      Welcome to the Analytics reporting page
     = form_tag :controller => 'ga', :action => 'report' do
       .form-stacked
-        = label :report, "report"
+        = label :report, "Choose a report"
         = select :report, :report, reports_list(), {}
         %br
         = label :agent, "Search by agent"
