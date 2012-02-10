@@ -8,6 +8,16 @@ class Ga < ActiveRecord::Base
   def self.query(params = nil) 
     # profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
+    if params[:agent]
+      # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => get_agent_listings(params[:agent]))
+      # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listings( [10085975, 10271537, 10281372, 10138415, 10093932, 10153463, 10281305] ) )
+      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'},{ :page_path.contains => "10271537"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+    else
+      # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile)
+      # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10085975'},{ :page_path.contains => "10271537"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+      # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'}, { :page_path.contains => "11411790"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+    end
     # profile = Garb::Management::Profile.all.first
     # report = Garb::Report.new(profile, 
     #                           :start_date => start_date(params), 
@@ -24,7 +34,6 @@ class Ga < ActiveRecord::Base
     # report.results()
 
     # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '9779425'},{ :page_path.contains => "10277928"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
-    GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listing(["10277928", "10191776", "9779425"]) )
     # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile, :filters =>  { :page_path.contains => "9779425"} )
     # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile)#, :filters =>  { :page_path.contains => "10277928"} )
   end
@@ -44,7 +53,6 @@ class Ga < ActiveRecord::Base
     end_date = Date.civil(params[:"end_date(1i)"].to_i,params[:"end_date(2i)"].to_i,params[:"end_date(3i)"].to_i)
   end
 end
-private
 
 def param_to_class(report)
   report.split.collect {|x| x.capitalize}.join
@@ -57,6 +65,11 @@ def filter_by_agent_listing(listing_ids)
     filters << {:page_path.contains => listing_id}
   end
   return filters
+end
+
+def get_agent_listings(agent_id)
+  listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(agent_id).results.map {|listing| listing.listingid}
+  filter_by_agent_listing(listings)
 end
 
 module Fields

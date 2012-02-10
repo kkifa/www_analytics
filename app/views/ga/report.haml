@@ -2,15 +2,16 @@
   .pull-right{:style => "margin-top: -20px;"}
     = image_tag "koolaid-good.png"
   %fieldset
-    %h1
-      #{@office.name} Analytics reporting page
+    %h2
+      #{@office.name} Analytics Reporting Page
     = form_tag :controller => 'ga', :action => 'report' do
       .form-stacked
         = label :report, "Choose a report"
         = select :report, :report, reports_list(), {}
         %br
         = label :agent, "Search by agent"
-        = select :agent, :agent, agents_list()
+        -# = select :agent, :agent, agents_list()
+        = select :agent, :agent, agents_with_listings_list()
         %br
         = label :listing, "Search for a listing from URL"
         = text_field :listing, :listing

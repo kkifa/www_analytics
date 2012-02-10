@@ -31,7 +31,18 @@ module GaHelper
 
   def agents_list
     office = WmsSvcConsumer::Models::Office.find(7939473)
-    agents = office.agents.map{|agent| [agent.display_name, agent.user_id]}
+    agents = office.agents.map{|agent| [agent.display_name, agent.uuid]}
+  end
+
+  def agents_with_listings_list
+    office = WmsSvcConsumer::Models::Office.find(7939473)
+    agents = []
+    office.agents.each do |agent|
+      if WmsSvcConsumer::Models::Listing.find_all_by_agent(agent.uuid).results.count > 0
+        agents << [agent.display_name, agent.uuid]
+      end
+    end
+    return agents
   end
   
 end
