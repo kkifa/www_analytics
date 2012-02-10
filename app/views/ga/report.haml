@@ -11,15 +11,14 @@
         = label :report, "Choose a report"
         = select :report, :report, reports_list(), {}
         %br
-        = label :agent, "Search by agent"
-        -# = select :agent, :agent, agents_list()
+        = label :report, "Search by agent"
         = select :report, :agent, agents_with_listings_list()
         %br
-        = label :listing, "Search for a listing from URL"
-        = text_field :listing, :listing
+        = label :report, "Search for a listing from URL"
+        = text_field :report, :listing
         %br
-        = label :range, "Time range"
-        = select :range, :range, ["one day", "one week", "two weeks", "one month", "three month", "six months"]
+        = label :report, "Time range"
+        = select :report, :range, ["one day", "one week", "two weeks", "one month", "three month", "six months"]
         = submit_tag "Submit"
       
   - if @columns
