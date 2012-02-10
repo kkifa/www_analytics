@@ -5,10 +5,13 @@ class Ga < ActiveRecord::Base
   PASSWORD = Rails.application.config.analytics_login[:password]
   Garb::Session.login(USER, PASSWORD)
   def self.query(params = nil) 
-    # profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     if params[:agent]
-      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => get_agent_listings(params[:agent]))
+      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,
+                                                                         :filters => get_agent_listings(params[:agent]),
+                                                                         :end_date => Date.today,
+                                                                         :start_date => Date.parse(params[:start_date])
+                                                                        )
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listings( [10085975, 10271537, 10281372, 10138415, 10093932, 10153463, 10281305] ) )
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'},{ :page_path.contains => "10271537"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
     else
@@ -16,7 +19,12 @@ class Ga < ActiveRecord::Base
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10085975'},{ :page_path.contains => "10271537"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'}]) #, :sort => :unique_pageviews.desc, :limit => 10)
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'}, { :page_path.contains => "11411790"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
-      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  filter_by_agent_listing([10947306, 11411790]) )
+      # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  filter_by_agent_listing([10947306, 11411790]) )
+      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile, 
+                                                                         :filters =>  get_office_listings(params[:office]),
+                                                                         :end_date => Date.today,
+                                                                         :start_date => Date.parse(params[:start_date])
+                                                                        )
     end
 
     # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '9779425'},{ :page_path.contains => "10277928"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
@@ -47,8 +55,8 @@ end
 def filter_by_agent_listing(listing_ids)
   filters = []
   for listing_id in listing_ids
-    # filters << {:page_path.contains => listing_id, :page_path.contains => "\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?"}
-    filters << {:page_path.contains => listing_id}
+    filters << {:page_path.contains => listing_id, :page_path.contains => "\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?"}
+    # filters << {:page_path.contains => listing_id}
   end
   return filters
 end
@@ -56,6 +64,13 @@ end
 def get_agent_listings(agent_id)
   listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(agent_id).results.map {|listing| listing.listingid}
   filter_by_agent_listing(listings)
+end
+
+def get_office_listings(office_id)
+  listings = WmsSvcConsumer::Models::Listing.find_all_by_office(office_id)
+end
+
+def date_range()
 end
 
 module Fields

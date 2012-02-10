@@ -12,15 +12,15 @@
         = select :report, :report, reports_list(), {}
         %br
         = label :report, "Search by agent"
-        = select :report, :agent, agents_with_listings_list()
+        = select :report, :agent, agents_with_listings_list(), {include_blank: "Whole Office"}
         %br
         = label :report, "Search for a listing from URL"
         = text_field :report, :listing
         %br
         = label :report, "Time range"
-        = select :report, :range, [["one day", "#{1.day.ago.to_date}"], ["one week", "#{1.week.ago.to_date}"], ["two weeks","#{2.weeks.ago.to_date}"], ["one month","#{1.month.ago.to_date}"], ["three month","#{3.months.ago.to_date}"], ["six months","#{6.months.ago.to_date}"]]
+        = select :report, :start_date, options_for_select([ ["one day", "#{1.day.ago.to_date}"], ["one week", "#{1.week.ago.to_date}"], ["two weeks","#{2.weeks.ago.to_date}"], ["one month","#{1.month.ago.to_date}"], ["three month","#{3.months.ago.to_date}"], ["six months","#{6.months.ago.to_date}"] ], selected: 1.month.ago.to_date)
+        = hidden_field :report, :office, value: @office.uuid
         = submit_tag "Submit"
-      
   - if @columns
     %fieldset
       .results
