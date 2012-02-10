@@ -8,9 +8,9 @@ class Ga < ActiveRecord::Base
     # profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     if params[:agent]
-      # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => get_agent_listings(params[:agent]))
+      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => get_agent_listings(params[:agent]))
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,  :filters => filter_by_agent_listings( [10085975, 10271537, 10281372, 10138415, 10093932, 10153463, 10281305] ) )
-      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'},{ :page_path.contains => "10271537"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+      # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'},{ :page_path.contains => "10271537"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
     else
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile)
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10085975'},{ :page_path.contains => "10271537"}]) #, :sort => :unique_pageviews.desc, :limit => 10)

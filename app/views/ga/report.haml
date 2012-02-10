@@ -13,11 +13,13 @@
         %br
         = label :agent, "Search by agent"
         -# = select :agent, :agent, agents_list()
-        = select :agent, :agent, agents_with_listings_list()
+        = select :report, :agent, agents_with_listings_list()
         %br
         = label :listing, "Search for a listing from URL"
         = text_field :listing, :listing
         %br
+        = label :range, "Time range"
+        = select :range, :range, ["one day", "one week", "two weeks", "one month", "three month", "six months"]
         = submit_tag "Submit"
       
   - if @columns
@@ -37,6 +39,7 @@
 - if defined? @columns
   = debug @results.first.fields
   = debug @results.first
+  = debug params
 
   #chart_bar
   #chart_pie
