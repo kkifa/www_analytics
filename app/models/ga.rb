@@ -4,7 +4,6 @@ class Ga < ActiveRecord::Base
   USER = Rails.application.config.analytics_login[:user]
   PASSWORD = Rails.application.config.analytics_login[:password]
   Garb::Session.login(USER, PASSWORD)
-  
   def self.query(params = nil) 
     # profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
@@ -16,22 +15,9 @@ class Ga < ActiveRecord::Base
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile)
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10085975'},{ :page_path.contains => "10271537"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
       # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'}]) #, :sort => :unique_pageviews.desc, :limit => 10)
-      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'}, { :page_path.contains => "11411790"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+      # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '10947306'}, { :page_path.contains => "11411790"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
+      GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  filter_by_agent_listing([10947306, 11411790]) )
     end
-    # profile = Garb::Management::Profile.all.first
-    # report = Garb::Report.new(profile, 
-    #                           :start_date => start_date(params), 
-    #                           :end_date => end_date(params), 
-    #                           :limit => params[:limit].to_s, 
-    #                           :offset => params[:offset].to_s
-    #                           )
-    # report.metrics params[:metrics]
-    # report.dimensions params[:dimensions]
-    # if params[:sort] == 'desc'
-    #   sort =  params[:metrics].first
-    #   report.sort sort.to_sym.desc
-    # end
-    # report.results()
 
     # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile ,  :filters =>  [{:page_path.contains => '9779425'},{ :page_path.contains => "10277928"}]) #, :sort => :unique_pageviews.desc, :limit => 10)
     # GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile, :filters =>  { :page_path.contains => "9779425"} )

@@ -1,9 +1,11 @@
 .content.span16.columns
   .pull-right{:style => "margin-top: -20px;"}
     = image_tag "koolaid-good.png"
+  %h1
+    #{@office.name} 
+  %h3
+    Analytics Reporting Page
   %fieldset
-    %h2
-      #{@office.name} Analytics Reporting Page
     = form_tag :controller => 'ga', :action => 'report' do
       .form-stacked
         = label :report, "Choose a report"
