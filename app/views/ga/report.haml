@@ -18,7 +18,7 @@
         = text_field :report, :listing
         %br
         = label :report, "Time range"
-        = select :report, :range, ["one day", "one week", "two weeks", "one month", "three month", "six months"]
+        = select :report, :range, [["one day", "#{1.day.ago.to_date}"], ["one week", "#{1.week.ago.to_date}"], ["two weeks","#{2.weeks.ago.to_date}"], ["one month","#{1.month.ago.to_date}"], ["three month","#{3.months.ago.to_date}"], ["six months","#{6.months.ago.to_date}"]]
         = submit_tag "Submit"
       
   - if @columns
