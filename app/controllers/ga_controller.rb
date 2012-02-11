@@ -8,7 +8,9 @@ class GaController < ApplicationController
     unless params[:report].nil?
       @results = Ga.query(params[:report])
       @columns = @results.first.fields
+      @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
     end
+                                       
   end
   def agents   
     @stuff = {}

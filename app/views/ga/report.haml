@@ -12,7 +12,7 @@
         = select :report, :report, reports_list(), {}
         %br
         = label :report, "Search by agent"
-        = select :report, :agent, agents_with_listings_list(), {include_blank: "Whole Office"}
+        = select :report, :agent, agents_with_listings_list()#, {include_blank: "Whole Office"}
         %br
         = label :report, "Search for a listing from URL"
         = text_field :report, :listing
@@ -35,9 +35,36 @@
               %td
                 = result.send(column)
 
+  %table.span12.columns
+    %th
+      %p
+        thumbnail
+    %th
+      %p
+        address
+    %th
+      %p
+        listing id
+    %th
+      %p
+        price
+
+    - if @listings
+      - for listing in @listings.results 
+        %tr
+          %td
+            =image_tag listing.image.first["thumb_url"]
+          %td
+            =listing.location.address
+          %td
+            =listing.listingid
+          %td
+            =listing.list_price
+    
+
 - if defined? @columns
   = debug @results.first.fields
-  = debug @results.first
+  = debug @listings.results
   = debug params
 
   #chart_bar
