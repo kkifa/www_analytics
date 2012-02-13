@@ -60,7 +60,24 @@
             =listing.listingid
           %td
             =listing.list_price
-    
+
+  %br
+
+  %table.span12.columns
+    %th
+      Listing ID
+    %th
+      unique
+    %th
+      total
+    - @listing_page_visits.each do |listing|
+      %tr
+        %td
+          = listing[0]
+        %td
+          = listing[1]
+        %td
+          = listing[2]
 
 - if defined? @columns
   = debug @results.first.fields
@@ -78,28 +95,33 @@
     function drawChart() {
 
     var listing_views = [
-    -#- for result in @results
-    -#  - unless result.second_page_path == '/' || result.second_page_path == '(not set)'
-    -#    - listing_id = result.second_page_path
-    -#    - listing_id.slice!(0)
-    -#    = "['#{listing_id}' , #{result.pageviews}],"
+    - @listing_page_visits.each do |listing|
+      = "['#{listing[0]}', #{listing[1]}, #{listing[2] - listing[1]}],"
+      -#
+      -#= "['#{listing_id}' , #{result.pageviews}],"
     ];
 
     // Create the data table for Site Visits.
     var title = 'Views by Listing ID';
     var data_site_visits = new google.visualization.DataTable();
     data_site_visits.addColumn('string', 'Listing');
-    data_site_visits.addColumn('number', 'Views');
+    data_site_visits.addColumn('number', 'Unique Views');
+    data_site_visits.addColumn('number', 'Page Views');
     data_site_visits.addRows( listing_views );
 
     // Set chart options
-    var options = {'title': title, 'width':400, 'height':300 };
+    var options = {
+    'title': title,
+    'width':400,
+    'height':300,
+    'isStacked':true
+    };
 
     // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.BarChart(document.getElementById('chart_bar'));
+    var chart = new google.visualization.ColumnChart(document.getElementById('chart_bar'));
     var chart2 = new google.visualization.PieChart(document.getElementById('chart_pie'));
     chart.draw(data_site_visits, options);
-    chart2.draw(data_site_visits, options);
+    -#chart2.draw(data_site_visits, options);
 
     google.visualization.events.addListener(chart2, 'select', function() {
     var selection = chart2.getSelection();
