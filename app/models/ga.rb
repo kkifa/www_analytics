@@ -22,6 +22,15 @@ class Ga < ActiveRecord::Base
 
   end
 
+  def self.test()
+    profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
+    GoogleAnalytics.const_get("AgentListings").results(profile, 
+                                      :filters =>  get_office_listings(8147730),
+                                      :end_date => Date.today,
+                                      :start_date => 1.month.ago.to_date
+                                      )
+  end
+
 
 end
 

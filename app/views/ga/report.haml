@@ -1,3 +1,5 @@
+#gritter-notice-wrapper
+  = gflash
 .content.span16.columns
   .pull-right{:style => "margin-top: -20px;"}
     = image_tag "koolaid-good.png"
@@ -80,7 +82,7 @@
           = listing[2]
 
 - if defined? @columns
-  = debug @results.first.fields
+  = debug @results.first.send(:page_path).match /\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/ 
   = debug @listings.results.first
   = debug params
 

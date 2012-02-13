@@ -7,6 +7,7 @@ gem 'rails', '3.1.3'
 
 gem 'sqlite3'
 gem 'pg', '0.11.0', :require => 'pg'
+gem 'gritter'
 # gem 'garb'
 # gem 'garb', :git => "https://github.com/seomoz/garb.git" # log in erro
 # gem 'garb', :git => "https://github.com/seomoz/garb.git", :ref => "35cd692" # log in erro

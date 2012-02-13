@@ -92,6 +92,7 @@ GEM
     ffi (1.0.11)
     gherkin (2.7.7)
       json (>= 1.4.6)
+    gritter (1.0.1)
     haml (3.1.4)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -200,6 +201,7 @@ DEPENDENCIES
   coffee-rails (~> 3.1.1)
   cucumber-rails
   garb!
+  gritter
   haml-rails
   jquery-rails
   pg (= 0.11.0)
