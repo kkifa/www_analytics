@@ -42,5 +42,9 @@ module GaHelper
     end
     return agents
   end
+  def add_it_up(column_name, uuid, results)
+    results
+    
+  end
   
 end

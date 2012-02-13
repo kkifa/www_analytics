@@ -9,12 +9,12 @@ class GaController < ApplicationController
       # @results = Ga.query(params[:report])
       @results = listings_only_filter(params[:report])
       if @results.empty?
-        redirect_to "ga/empty", :notice => "Found zero results for the given search criteria. D: "
-        gflash :warning => "Found zero results for the given search criteria. D: ", :notice => "testing this shit"
+        redirect_to "ga/empty"
+        gflash :warning => "Found zero results for the given search criteria. D: "
       else
         @columns = @results.first.fields
         @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
-        gflash  :success => "OOOHHH YEAH!!!! Here is this shit you wanted"
+        gflash  :success => {:value =>  "OOOHHH YEAH!!!! Here is this shit you wanted", :image => "/assets/koolaid-small.png"}
       end
     end
                                        
@@ -62,10 +62,7 @@ class GaController < ApplicationController
     filtered_results = []
     results.each do |result|
       filtered_results << result if result.send(:page_path).match(/\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/)
-      # filtered_results << result if result.send(:page_path).match(/\/listing(\/[\w\-]+){4}|\/listings/)
     end
-    # return filtered_results.compact!
-    # return filtered_results
     aggregated_listings(report, filtered_results)
   end
   def aggregated_listings(report, filtered_results)

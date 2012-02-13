@@ -5,7 +5,7 @@ class Ga < ActiveRecord::Base
   PASSWORD = Rails.application.config.analytics_login[:password]
   Garb::Session.login(USER, PASSWORD)
   def self.query(params = nil) 
-    profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
+    profile =  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     if params[:agent]
       GoogleAnalytics.const_get(param_to_class(params[:report])).results(profile,
                                                                          :filters => get_agent_listings(params[:agent]),

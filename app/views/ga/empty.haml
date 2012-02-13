@@ -1,5 +1,4 @@
-#gritter-notice-wrapper{style: "right: 400px;"}
-  = gflash
+
 .content.span16.columns
   .pull-right{:style => "margin-top: -20px;"}
     = image_tag "koolaid-good.png"
@@ -23,46 +22,6 @@
         = select :report, :start_date, options_for_select([ ["one day", "#{1.day.ago.to_date}"], ["one week", "#{1.week.ago.to_date}"], ["two weeks","#{2.weeks.ago.to_date}"], ["one month","#{1.month.ago.to_date}"], ["three month","#{3.months.ago.to_date}"], ["six months","#{6.months.ago.to_date}"] ], selected: 1.month.ago.to_date)
         = hidden_field :report, :office, value: @office.uuid
         = submit_tag "Submit"
-
-  %table.span12.columns
-    %th
-      %p
-        thumbnail
-    %th
-      %p
-        address
-    %th
-      %p
-        listing id
-    %th
-      %p
-        price
-    %th
-      %p
-        page views
-    %th
-      %p
-        unique page views
-    %th
-      %p
-        page views by date
-
-    - if @listings
-      - for listing in @listings.results 
-        %tr
-          %td
-            =image_tag listing.image.first["thumb_url"]
-          %td
-            =listing.location.address
-          %td
-            =listing.listingid
-          %td
-            =listing.list_price
-          %td
-            =@results.map{|result| result.send(:pageviews).to_i if result.uuid.to_i == listing.listingid.to_i }.compact!.sum
-          %td
-            =@results.map{|result| result.send(:unique_pageviews).to_i if result.uuid == listing.listingid}.compact!.sum
-          %td
   - if @columns
     %fieldset
       .results
@@ -77,9 +36,35 @@
               %td
                 = result.send(column)
 
+  %table.span12.columns
+    %th
+      %p
+        thumbnail
+    %th
+      %p
+        address
+    %th
+      %p
+        listing id
+    %th
+      %p
+        price
+
+    - if @listings
+      - for listing in @listings.results 
+        %tr
+          %td
+            =image_tag listing.image.first["thumb_url"]
+          %td
+            =listing.location.address
+          %td
+            =listing.listingid
+          %td
+            =listing.list_price
     
 
 - if defined? @columns
+  = debug @results.first.send(:page_path).match /\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/ 
   = debug @listings.results.first
   = debug params
 
