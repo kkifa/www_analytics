@@ -14,15 +14,16 @@ class GaController < ApplicationController
       else
         @columns = @results.first.fields
         @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
-        gflash  :notice => "testing this shit",  :success => "Here is this shit you wanted"
+        gflash  :success => "OOOHHH YEAH!!!! Here is this shit you wanted"
       end
     end
                                        
   end
+
   def empty
-    
     @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
   end
+  
   def agents   
     @stuff = {}
     @title = "Windermere analytics - agents"
@@ -57,14 +58,30 @@ class GaController < ApplicationController
   private
   def listings_only_filter(report)
     results = Ga.query(report)
+    results.class.instance_eval('attr_accessor :uuid')
     filtered_results = []
     results.each do |result|
       filtered_results << result if result.send(:page_path).match(/\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/)
       # filtered_results << result if result.send(:page_path).match(/\/listing(\/[\w\-]+){4}|\/listings/)
     end
     # return filtered_results.compact!
+    # return filtered_results
+    aggregated_listings(report, filtered_results)
+  end
+  def aggregated_listings(report, filtered_results)
+    listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(report["agent"])
+    listings_ids = []
+    for listing in listings.results.each
+      listings_ids << listing.listingid
+    end
+    listings_ids.each do |id|
+      filtered_results.each do |listing|
+        if listing.send(:page_path).match(/#{id}/)
+          listing.uuid = id 
+        end
+      end
+    end
     return filtered_results
-    # return results
   end
 end
 
