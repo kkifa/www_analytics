@@ -63,7 +63,7 @@
     
 
 - if defined? @columns
-  = debug @results.first.fields
+  = debug @results.first.send(:page_path).match /\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/ 
   = debug @listings.results.first
   = debug params
 
