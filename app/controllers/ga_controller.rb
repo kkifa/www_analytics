@@ -8,10 +8,20 @@ class GaController < ApplicationController
     unless params[:report].nil?
       # @results = Ga.query(params[:report])
       @results = listings_only_filter(params[:report])
-      @columns = @results.first.fields
-      @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
+      if @results.empty?
+        redirect_to "ga/empty", :notice => "Found zero results for the given search criteria. D: "
+        gflash :warning => "Found zero results for the given search criteria. D: ", :notice => "testing this shit"
+      else
+        @columns = @results.first.fields
+        @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
+        gflash  :notice => "testing this shit",  :success => "Here is this shit you wanted"
+      end
     end
                                        
+  end
+  def empty
+    
+    @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
   end
   def agents   
     @stuff = {}
