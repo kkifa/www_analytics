@@ -6,6 +6,27 @@ class GaController < ApplicationController
     @stuff = {}
     @title = "Windermere analytics test report"
     unless params[:report].nil?
+
+      @results = Ga.query(params[:report])
+      @columns = @results.first.fields
+      @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
+
+      @listing_page_visits = Array.new
+
+      @listings.results.each { |listing|
+        unique_visits = 0
+        total_visits = 0
+        @results.each{ |result|
+          if result.send(@columns[0]).include? listing.listingid.to_s
+            unique_visits = unique_visits + result.send(@columns[2]).to_i
+            total_visits = total_visits + result.send(@columns[1]).to_i
+          end
+        }
+
+        @listing_page_visits << [listing.listingid, unique_visits, total_visits]
+
+      }
+
       # @results = Ga.query(params[:report])
       @results = listings_only_filter(params[:report])
       if @results.empty?
@@ -16,6 +37,7 @@ class GaController < ApplicationController
         @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
         gflash  :success => "OOOHHH YEAH!!!! Here is this shit you wanted"
       end
+
     end
                                        
   end
