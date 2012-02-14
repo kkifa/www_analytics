@@ -6,37 +6,32 @@ class GaController < ApplicationController
     @stuff = {}
     @title = "Windermere analytics test report"
     unless params[:report].nil?
-
-      @results = Ga.query(params[:report])
-      @columns = @results.first.fields
       @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
-
+      @results = listings_only_filter(params[:report])
       @listing_page_visits = Array.new
-
+      @columns = @results.first.fields
       @listings.results.each { |listing|
         unique_visits = 0
         total_visits = 0
         @results.each{ |result|
           if result.send(@columns[0]).include? listing.listingid.to_s
-            unique_visits = unique_visits + result.send(@columns[2]).to_i
-            total_visits = total_visits + result.send(@columns[1]).to_i
+            unique_visits += result.send(@columns[2]).to_i
+            total_visits += result.send(@columns[1]).to_i
           end
         }
 
         @listing_page_visits << [listing.listingid, unique_visits, total_visits]
 
       }
-
-      # @results = Ga.query(params[:report])
-      @results = listings_only_filter(params[:report])
-      if @results.empty?
+      if @results.count == 0
         redirect_to "ga/empty"
-        gflash :warning => "Found zero results for the given search criteria. D: "
+        gflash :warning => "Found zero results for the given search criteria."
       else
         @columns = @results.first.fields
         @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
         gflash  :success => {:value =>  "OOOHHH YEAH!!!! Here is this shit you wanted", :image => "/assets/koolaid-small.png"}
       end
+      @columns = @results.first.fields
 
     end
                                        
