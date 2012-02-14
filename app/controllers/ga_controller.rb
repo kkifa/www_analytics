@@ -34,7 +34,6 @@ class GaController < ApplicationController
       @columns = @results.first.fields
 
     end
-                                       
   end
 
   def empty
@@ -75,7 +74,7 @@ class GaController < ApplicationController
   private
   def listings_only_filter(report)
     results = Ga.query(report)
-    results.class.instance_eval('attr_accessor :uuid')
+    results.class.instance_eval('attr_accessor :uuid, :date_dimension')
     filtered_results = []
     results.each do |result|
       filtered_results << result if result.send(:page_path).match(/\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/)
@@ -89,13 +88,27 @@ class GaController < ApplicationController
       listings_ids << listing.listingid
     end
     listings_ids.each do |id|
-      filtered_results.each do |listing|
-        if listing.send(:page_path).match(/#{id}/)
-          listing.uuid = id 
+      filtered_results.each do |result|
+        if result.send(:page_path).match(/#{id}/)
+          result.uuid = id 
         end
       end
     end
+    set_dates(filtered_results)
     return filtered_results
+  end
+
+  def set_dates(results)
+    @date_dimension = []
+    for result in results
+      stored_element = @date_dimension.detect { |element| element[:date].to_s == result.send(:date).to_s }
+      if stored_element
+        stored_element[:value][:pageviews] += result.send(:pageviews).to_i
+        stored_element[:value][:unique_pageviews] += result.send(:unique_pageviews).to_i
+      else
+        @date_dimension << {:date => result.send(:date).to_s, :value => {:pageviews => result.send(:pageviews).to_i, :unique_pageviews => result.send(:unique_pageviews).to_i} }
+      end
+    end
   end
 end
 

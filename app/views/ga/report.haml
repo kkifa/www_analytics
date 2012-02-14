@@ -63,6 +63,15 @@
           %td
             =@results.map{|result| result.send(:unique_pageviews).to_i if result.uuid == listing.listingid}.compact!.sum
           %td
+            %ul 
+              -@date_dimension.each do |date|
+                %li{data: {date: "#{date[:date]}", pageviews: "#{date[:value][:pageviews]}", unique_pageviews: "#{date[:value][:unique_pageviews]}"}}
+                  %p
+                    ="#{Date.parse(date[:date]).strftime("%B: %d")}" 
+                    %br
+                    = "page views: #{date[:value][:pageviews]} "
+                    %br
+                    = "unique views: #{date[:value][:unique_pageviews]}"
   - if @columns
     %fieldset
       .results
