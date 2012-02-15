@@ -3,6 +3,7 @@ WwwAnalytics::Application.routes.draw do
   # first created -> highest priority.
   match "/agents" => "ga#agents"
   match "/show" => "ga#show"
+  match "/reports" => "ga#report"
 
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
@@ -51,6 +52,7 @@ WwwAnalytics::Application.routes.draw do
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # root :to => 'welcome#index'
+  match 'reports(/:office_slug)' => "ga#report"
 
   match ':controller(/:action(/:id(.:format)))'
   root :to => "ga#report"

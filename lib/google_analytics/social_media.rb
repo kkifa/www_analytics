@@ -1,7 +1,7 @@
 module GoogleAnalytics
   class SocialMedia
     extend Garb::Model
-    dimensions  :referral_path, :source
+    dimensions  :page_path, :date
     metrics  :pageviews, :unique_pageviews
   end
 end

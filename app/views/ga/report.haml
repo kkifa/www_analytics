@@ -69,8 +69,14 @@
           -#  =@results.map{|result| result.send(:pageviews).to_i if result.uuid.to_i == listing.listingid.to_i }.compact!.sum
           -#%td
           -#  =@results.map{|result| result.send(:unique_pageviews).to_i if result.uuid == listing.listingid}.compact!.sum
-          -#%td
-
+          %td
+            =link_to  "detailed listing analytics", "#"
+            -# -@date_dimension.each do |date|
+              %a{href: "#",  data: {date: "#{date[:date]}", pageviews: "#{date[:value][:pageviews]}", unique_pageviews: "#{date[:value][:unique_pageviews]}"} }
+            -@results.each do |result|
+              - result.date_dimension do |date|
+                %a{href: "#",  style: "display: none;", data: {date: "#{date[:date]}", pageviews: "#{date[:value][:pageviews]}", unique_pageviews: "#{date[:value][:unique_pageviews]}"} }
+                  bleh
   - if @columns
     %fieldset
       .results

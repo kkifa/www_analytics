@@ -42,9 +42,14 @@ module GaHelper
     end
     return agents
   end
-  def add_it_up(column_name, uuid, results)
-    results
-    
+  def date_results(reports, listing_id)
+    date_oriented_result = []
+    for report in reports
+      if report.uuid == listing_id
+        date_oriented_result << [report.send(:date), report.send(:page_views), report.send(:unique_pageviews)] 
+      end
+    end
+    return date_oriented_result[0].to_s + " page views: " + date_oriented_result[1].to_s + " unique views: " + date_oriented_result[2].to_s
   end
   
 end
