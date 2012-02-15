@@ -13,18 +13,36 @@ class GaController < ApplicationController # before_filter :profiles_list
       @listing_page_visits = Array.new
       @columns = @results.first.fields
       @listings.results.each { |listing|
+        @date_visits = Hash.new(0)
         unique_visits = 0
         total_visits = 0
         @results.each{ |result|
           if result.send(@columns[0]).include? listing.listingid.to_s
-            unique_visits += result.send(@columns[2]).to_i
-            total_visits += result.send(@columns[1]).to_i
+            unique_visits += result.send(@columns[3]).to_i
+            total_visits += result.send(@columns[2]).to_i
+
+            visits = @date_visits[result.send(@columns[1])]
+            if visits == 0
+              visits = Array.new
+              visits[0] = result.send(@columns[2]).to_i # pageviews
+              visits[1] = result.send(@columns[3]).to_i # unique
+            else
+              visits[0] += result.send(@columns[2]).to_i # pageviews
+              visits[1] += result.send(@columns[3]).to_i # unique
+            end
+            @date_visits[result.send(@columns[1])] = visits
+
           end
         }
 
-        @listing_page_visits << [listing.listingid, unique_visits, total_visits]
-
+        #puts listing.listingid
+        #puts Hash[@date_visits.sort]
+        #puts " "
+        @listing_page_visits << [listing.listingid, Hash[@date_visits.sort]]
       }
+
+      #puts @listing_page_visits
+
       if @results.count == 0
         redirect_to "ga/empty"
         gflash :warning => "Found zero results for the given search criteria."
