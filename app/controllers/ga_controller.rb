@@ -1,12 +1,14 @@
-class GaController < ApplicationController
-
-  # before_filter :profiles_list
+class GaController < ApplicationController # before_filter :profiles_list
 
   def report   
     @stuff = {}
     @title = "Windermere analytics test report"
     unless params[:report].nil?
-      @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
+      if !params[:report][:listing].empty?
+        @listings = WmsSvcConsumer::Models::Listing.find(listing_snipe(params[:report][:listing]))
+      else
+        @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
+      end
       @results = listings_only_filter(params[:report])
       @listing_page_visits = Array.new
       @columns = @results.first.fields
@@ -29,7 +31,7 @@ class GaController < ApplicationController
       else
         @columns = @results.first.fields
         @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
-        gflash  :success => {:value =>  "OOOHHH YEAH!!!! Here is this shit you wanted", :image => "/assets/koolaid-small.png"}
+        gflash  :success => {:value =>  "OOOHHH YEAH!!!! koolaid!!", :image => "/assets/koolaid-small.png"}
       end
       @columns = @results.first.fields
 
@@ -108,7 +110,16 @@ class GaController < ApplicationController
       else
         @date_dimension << {:date => result.send(:date).to_s, :value => {:pageviews => result.send(:pageviews).to_i, :unique_pageviews => result.send(:unique_pageviews).to_i} }
       end
+      result.date_dimension = @date_dimension
     end
+  end
+
+  def listing_snipe(listing_url)
+    snipe = listing_url.match(/\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/)
+    if snipe
+      listing = [8067751]
+    end
+    return listing
   end
 end
 
