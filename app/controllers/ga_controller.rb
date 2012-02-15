@@ -10,6 +10,7 @@ class GaController < ApplicationController # before_filter :profiles_list
         @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
       end
       @results = listings_only_filter(params[:report])
+      @agent = WmsSvcConsumer::Models::Agent.find(params[:report][:agent])
       @listing_page_visits = Array.new
       @columns = @results.first.fields
       @listings.results.each { |listing|
@@ -49,7 +50,7 @@ class GaController < ApplicationController # before_filter :profiles_list
       else
         @columns = @results.first.fields
         @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
-        gflash  :success => {:value =>  "OOOHHH YEAH!!!! koolaid!!", :image => "/assets/koolaid-small.png"}
+        gflash  :success => {:value =>  "OOOHHH YEAH!!!! Listing report for #{@agent.display_name}", :image => @agent.image.first["thumb_url"]}
       end
       @columns = @results.first.fields
 
