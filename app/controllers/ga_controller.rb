@@ -35,13 +35,13 @@ class GaController < ApplicationController # before_filter :profiles_list
           end
         }
 
-        puts listing.listingid
-        puts Hash[@date_visits.sort]
-        puts " "
+        #puts listing.listingid
+        #puts Hash[@date_visits.sort]
+        #puts " "
         @listing_page_visits << [listing.listingid, Hash[@date_visits.sort]]
       }
 
-      puts @listing_page_visits
+      #puts @listing_page_visits
 
       if @results.count == 0
         redirect_to "ga/empty"
