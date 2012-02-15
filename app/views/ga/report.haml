@@ -25,44 +25,52 @@
         = submit_tag "Submit"
 
   %table.span12.columns
-    %th
-      %p
-        thumbnail
-    %th
-      %p
-        address
-    %th
-      %p
-        listing id
-    %th
-      %p
-        price
-    %th
-      %p
-        page views
-    %th
-      %p
-        unique page views
-    %th
-      %p
-        page views by date
+    -#%th
+    -#%th
+    -#  %p
+    -#    address
+    -#%th
+    -#  %p
+    -#    listing id
+    -#%th
+    -#  %p
+    -#    price
+    -#%th
+    -#  %p
+    -#    page views
+    -#%th
+    -#  %p
+    -#    unique page views
+    -#%th
+    -#  %p
+    -#    page views by date
+    -#
 
     - if @listings
       - for listing in @listings.results 
         %tr
           %td
             =image_tag listing.image.first["thumb_url"]
-          %td
-            =listing.location.address
-          %td
+            %br
             =listing.listingid
           %td
-            =listing.list_price
+            =listing.location.address
+            %br
+            ="#{listing.location.city}, #{listing.location.state}"
+            %br
+            =number_to_currency(listing.list_price, :precision => 0)
           %td
-            =@results.map{|result| result.send(:pageviews).to_i if result.uuid.to_i == listing.listingid.to_i }.compact!.sum
-          %td
-            =@results.map{|result| result.send(:unique_pageviews).to_i if result.uuid == listing.listingid}.compact!.sum
-          %td
+            %div{ :id => "stats_#{listing.listingid}" }
+          -#%td
+          -#  =listing.listingid
+          -#%td
+          -#  =listing.list_price
+          -#%td
+          -#  =@results.map{|result| result.send(:pageviews).to_i if result.uuid.to_i == listing.listingid.to_i }.compact!.sum
+          -#%td
+          -#  =@results.map{|result| result.send(:unique_pageviews).to_i if result.uuid == listing.listingid}.compact!.sum
+          -#%td
+
   - if @columns
     %fieldset
       .results
@@ -80,28 +88,10 @@
 
   %br
 
-  -# %table.span12.columns
-    %th
-      Listing ID
-    %th
-      unique
-    %th
-      total
-    - @listing_page_visits.each do |listing|
-      %tr
-        %td
-          = listing[0]
-        %td
-          = listing[1]
-        %td
-          = listing[2]
-
 - if defined? @columns
   = debug @listings.results.first
   = debug params
 
-  #chart_bar
-  #chart_pie
   %script{:type => 'text/javascript'}
 
     // Load the Visualization API and the piechart package.
@@ -110,33 +100,58 @@
 
     function drawChart() {
 
-    var listing_views = [
+    -#var listing_views = [
     - @listing_page_visits.each do |listing|
-      = "['#{listing[0]}', #{listing[1]}, #{listing[2] - listing[1]}],"
-      -#
-      -#= "['#{listing_id}' , #{result.pageviews}],"
-    ];
+      - listing_id = listing[0]
+      - date_visits_hash = listing[1]
+      = "var listing_views_#{listing_id} = ["
+      - date_visits_hash.each do |date, values|
+        = "['#{Date.parse(date).month}/#{Date.parse(date).day}', #{values[1]}, #{values[0] - values[1]}],"
+      = "]"
 
-    // Create the data table for Site Visits.
-    var title = 'Views by Listing ID';
-    var data_site_visits = new google.visualization.DataTable();
-    data_site_visits.addColumn('string', 'Listing');
-    data_site_visits.addColumn('number', 'Unique Views');
-    data_site_visits.addColumn('number', 'Page Views');
-    data_site_visits.addRows( listing_views );
 
-    // Set chart options
-    var options = {
-    'title': title,
-    'width':400,
-    'height':300,
-    'isStacked':true
-    };
+      = "var title = \'Views of #{listing_id}\';"
+      = "var data_site_visits = new google.visualization.DataTable();"
+      = "data_site_visits.addColumn('string', 'Listing');"
+      = "data_site_visits.addColumn('number', 'Unique Views');"
+      = "data_site_visits.addColumn('number', 'Page Views');"
+      = "data_site_visits.addRows( listing_views_#{listing_id} );"
+
+      = "// Set chart options"
+      = "var options = {"
+      = " 'title': title,"
+      = " 'width':700,"
+      = " 'height':220,"
+      = " 'isStacked':true"
+      = "};"
+      = "var chart = new google.visualization.ColumnChart(document.getElementById(\'stats_#{listing_id}\'));"
+      = "chart.draw(data_site_visits, options);"
+
 
     // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.ColumnChart(document.getElementById('chart_bar'));
+    //var chart = new google.visualization.ColumnChart(document.getElementById('chart_bar'));
+
+    // Create the data table for Site Visits.
+    //var title = 'Views by Listing ID';
+    //var data_site_visits = new google.visualization.DataTable();
+    //data_site_visits.addColumn('string', 'Listing');
+    //data_site_visits.addColumn('number', 'Unique Views');
+    //data_site_visits.addColumn('number', 'Page Views');
+    //data_site_visits.addRows( listing_views );
+
+    // Set chart options
+    //var options = {
+    //'title': title,
+    //'width':800,
+    //'height':500,
+    //'isStacked':true
+    //};
+
+    // Instantiate and draw our chart, passing in some options.
+    //var chart = new google.visualization.ColumnChart(document.getElementById('chart_bar'));
+    //chart.draw(data_site_visits, options);
+
     var chart2 = new google.visualization.PieChart(document.getElementById('chart_pie'));
-    chart.draw(data_site_visits, options);
     -#chart2.draw(data_site_visits, options);
 
     google.visualization.events.addListener(chart2, 'select', function() {
