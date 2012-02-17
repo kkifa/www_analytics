@@ -11,49 +11,54 @@ class GaController < ApplicationController # before_filter :profiles_list
       end
       @results = listings_only_filter(params[:report])
       @agent = WmsSvcConsumer::Models::Agent.find(params[:report][:agent])
-      @listing_page_visits = Array.new
-      @columns = @results.first.fields
-      @listings.results.each { |listing|
-        @date_visits = Hash.new(0)
-        unique_visits = 0
-        total_visits = 0
-        @results.each{ |result|
-          if result.send(@columns[0]).include? listing.listingid.to_s
-            unique_visits += result.send(@columns[3]).to_i
-            total_visits += result.send(@columns[2]).to_i
-
-            visits = @date_visits[result.send(@columns[1])]
-            if visits == 0
-              visits = Array.new
-              visits[0] = result.send(@columns[2]).to_i # pageviews
-              visits[1] = result.send(@columns[3]).to_i # unique
-            else
-              visits[0] += result.send(@columns[2]).to_i # pageviews
-              visits[1] += result.send(@columns[3]).to_i # unique
-            end
-            @date_visits[result.send(@columns[1])] = visits
-
-          end
-        }
-
-        #puts listing.listingid
-        #puts Hash[@date_visits.sort]
-        #puts " "
-        @listing_page_visits << [listing.listingid, Hash[@date_visits.sort]]
-      }
-
-      #puts @listing_page_visits
 
       if @results.count == 0
-        redirect_to "ga/empty"
+        #redirect_to empty
+        #redirect_to "/empty"
+        #redirect_to "/ga/empty"
         gflash :warning => "Found zero results for the given search criteria."
       else
+        @listing_page_visits = Array.new
+        @columns = @results.first.fields
+        @listings.results.each { |listing|
+          @date_visits = Hash.new(0)
+          unique_visits = 0
+          total_visits = 0
+          @results.each{ |result|
+            if result.send(@columns[0]).include? listing.listingid.to_s
+              unique_visits += result.send(@columns[3]).to_i
+              total_visits += result.send(@columns[2]).to_i
+
+              visits = @date_visits[result.send(@columns[1])]
+              if visits == 0
+                visits = Array.new
+                visits[0] = 0
+                visits[1] = 0
+                visits[2] = 0
+              end
+
+              if result.send(@columns[0]).include? "refer=map"
+                visits[0] += result.send(@columns[2]).to_i # pageviews
+              elsif result.send(@columns[0]).include? "/gallery"
+                visits[1] += result.send(@columns[2]).to_i
+              else
+                visits[2] += result.send(@columns[2]).to_i
+              end
+
+              @date_visits[result.send(@columns[1])] = visits
+
+            end
+          }
+
+          #puts Hash[@date_visits.sort]
+          @listing_page_visits << [listing.listingid, Hash[@date_visits.sort]]
+        }
+
         @columns = @results.first.fields
         @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
         gflash  :success => {:value =>  "OOOHHH YEAH!!!! Listing report for #{@agent.display_name}", :image => @agent.image.first["thumb_url"]}
       end
-      @columns = @results.first.fields
-
+      #@columns = @results.first.fields
     end
   end
 
