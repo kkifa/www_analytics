@@ -25,46 +25,23 @@
         = submit_tag "Submit"
 
   %table.span12.columns
-    -#%th
-    -#%th
-    -#  %p
-    -#    address
-    -#%th
-    -#  %p
-    -#    listing id
-    -#%th
-    -#  %p
-    -#    price
-    -#%th
-    -#  %p
-    -#    page views
-    -#%th
-    -#  %p
-    -#    unique page views
-    -#%th
-    -#  %p
-    -#    page views by date
-    -#
-
     - if @listings
       - for listing in @listings.results 
         %tr
           %td
-            =image_tag listing.image.first["thumb_url"]
-            %br
-            =listing.listingid
-          %td
-            =listing.location.address
-            %br
-            ="#{listing.location.city}, #{listing.location.state}"
-            %br
-            =number_to_currency(listing.list_price, :precision => 0)
+            %div{:style => "width:150px;"}
+              =image_tag listing.image.first["thumb_url"]
+              %br
+              =listing.listingid
+              %br
+              =listing.location.address
+              %br
+              ="#{listing.location.city}, #{listing.location.state}"
+              %br
+              %span{:style => "font-weight:bold;"}
+                =number_to_currency(listing.list_price, :precision => 0)
           %td
             %div{ :id => "stats_#{listing.listingid}" }
-          -#%td
-          -#  =listing.listingid
-          -#%td
-          -#  =listing.list_price
           -#%td
           -#  =@results.map{|result| result.send(:pageviews).to_i if result.uuid.to_i == listing.listingid.to_i }.compact!.sum
           -#%td
@@ -99,7 +76,7 @@
 
   %script{:type => 'text/javascript'}
 
-    // Load the Visualization API and the piechart package.
+    // Load the Visualization API.
     google.load('visualization', '1.0', {'packages':['corechart']});
     google.setOnLoadCallback(drawChart);
 
@@ -111,15 +88,17 @@
       - date_visits_hash = listing[1]
       = "var listing_views_#{listing_id} = ["
       - date_visits_hash.each do |date, values|
-        = "['#{Date.parse(date).month}/#{Date.parse(date).day}', #{values[1]}, #{values[0] - values[1]}],"
+        -#= "['#{Date.parse(date).month}/#{Date.parse(date).day}', #{values[1]}, #{values[0] - values[1]}],"
+        = "['#{Date.parse(date).month}/#{Date.parse(date).day}', #{values[0]}, #{values[1]}, #{values[2]}],"
       = "]"
 
 
-      = "var title = \'Views of #{listing_id}\';"
+      = "var title = \'Page Views for #{listing_id}\';"
       = "var data_site_visits = new google.visualization.DataTable();"
-      = "data_site_visits.addColumn('string', 'Listing');"
-      = "data_site_visits.addColumn('number', 'Unique Views');"
-      = "data_site_visits.addColumn('number', 'Page Views');"
+      = "data_site_visits.addColumn('string', 'Date');"
+      = "data_site_visits.addColumn('number', 'Map');"
+      = "data_site_visits.addColumn('number', 'Gallery');"
+      = "data_site_visits.addColumn('number', 'URL');"
       = "data_site_visits.addRows( listing_views_#{listing_id} );"
 
       = "// Set chart options"
