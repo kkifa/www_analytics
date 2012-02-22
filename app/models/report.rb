@@ -39,26 +39,30 @@ class Report < Garb::ResultSet
                                                                          :start_date => Date.parse(params["start_date"])
                                                                         )
                                   )
-      @columns = @results.first.fields
+      begin
+        @columns = arrange_columns( @results.first.fields )
+      rescue NoMethodError
+        puts "there was no value returned by analytics"
+      end
     elsif params["report"]
-      @results = GoogleAnalytics.const_get(param_to_class(params["report"])).results(profile, 
+      @results = googleanalytics.const_get(param_to_class(params["report"])).results(profile, 
                                                                          :filters =>  get_office_listings(params["office"]),
-                                                                         :end_date => Date.today,
-                                                                         :start_date => Date.parse(params[:start_date])
+                                                                         :end_date => date.today,
+                                                                         :start_date => date.parse(params[:start_date])
                                                                         )
-      @columns = @results.first.fields
-    end
     #there is an opportunity to sort the columns below
-    begin
-    @columns = @results.first.fields
-    rescue NoMethodError
-      puts params["listingid"]
+      begin
+        @columns = arrange_columns(@results.first.fields)
+      rescue NoMethodError
+        puts "there was no value returned by analytics"
+      end
     end
   end
 
-  def self.test
+  def test
     profile ||=  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
-    @listing = snipe_listing_from_url('http://www.windermere.com/listing/WA/Kirkland/13245-Holmes-Point-Dr-Ne-98034/10872720')
+    # @listing = self.snipe_listing_from_url('http://www.windermere.com/listing/WA/Kirkland/13245-Holmes-Point-Dr-Ne-98034/10872720')
+    # @listing = listings_to_filters('10872720')
     GoogleAnalytics.const_get("AgentListings").results(profile, 
                                       :filters => listings_to_filters(11736186),
                                       :end_date => ::Date.today,
@@ -115,11 +119,22 @@ class Report < Garb::ResultSet
   end
 
   def get_agent(agent)
-    @agent ||= WmsSvcConsumer::Models::Agent.find(agent)
+    @agent ||= wmssvcconsumer::models::agent.find(agent)
   end
 
   def param_to_class(report)
     report.split.collect {|x| x.capitalize}.join
+  end
+
+  def arrange_columns(fields)
+    #these values need to be in every Garb::Model report.
+    sorting_arrangement_key = [:page_path, :date, :pageviews, :unique_pageviews]
+    # remove the neccessary dimensions and metrics then push them back into the front of array
+    extra_fields = fields - sorting_arrangement_key
+    sorting_arrangement_key.each_with_index do |sym, index|
+      extra_fields.insert(index, sym)
+    end
+    return extra_fields
   end
 
 end
