@@ -1,26 +1,24 @@
 class GaController < ApplicationController # before_filter :profiles_list
 
   def report   
-    @stuff = {}
     @title = "Windermere analytics test report"
     unless params[:report].nil?
-      if !params[:report][:listing].empty?
-        @listings = WmsSvcConsumer::Models::Listing.find(listing_snipe(params[:report][:listing]))
+      if !params[:report]['listing'].blank?
+        redirect_to reports_listing_path(params)
+        return 
       else
-        @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
-      end
-      @results = listings_only_filter(params[:report])
-      @agent = WmsSvcConsumer::Models::Agent.find(params[:report][:agent])
+      @report = Report.new(params[:report])
+      @results = @report.results
+      @agent   = @report.agent
+      @listings = @report.listings
 
       if @results.count == 0
-        #redirect_to empty
-        #redirect_to "/empty"
-        #redirect_to "/ga/empty"
+        render :nothing => true
         gflash :warning => "Found zero results for the given search criteria."
       else
         @listing_page_visits = Array.new
-        @columns = @results.first.fields
-        @listings.results.each { |listing|
+        @columns = @report.columns
+        @listings.each { |listing|
           @date_visits = Hash.new(0)
           unique_visits = 0
           total_visits = 0
@@ -54,11 +52,11 @@ class GaController < ApplicationController # before_filter :profiles_list
           @listing_page_visits << [listing.listingid, Hash[@date_visits.sort]]
         }
 
-        @columns = @results.first.fields
-        @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
+        @columns = @report.columns
         gflash  :success => {:value =>  "OOOHHH YEAH!!!! Listing report for #{@agent.display_name}", :image => @agent.image.first["thumb_url"]}
       end
       #@columns = @results.first.fields
+      end
     end
   end
 
@@ -66,6 +64,17 @@ class GaController < ApplicationController # before_filter :profiles_list
     @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(params[:report][:agent])
   end
   
+  def listing
+    @title   = "Windermere analytics test report"
+    # @results = Report.new(params[:report])
+    @report = Report.new(params)
+    @results = @report.results
+    @listing = @report.listing
+    @agent   = @report.agent
+    @columns = @report.columns
+    gflash  :success => {:value =>  "OOOHHH YEAH!!!! Listing report for #{@listing.location.address}", :image => @listing.images.first["thumb_url"]}
+  end
+
   def agents   
     @stuff = {}
     @title = "Windermere analytics - agents"
@@ -141,9 +150,17 @@ class GaController < ApplicationController # before_filter :profiles_list
   def listing_snipe(listing_url)
     snipe = listing_url.match(/\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/)
     if snipe
-      listing = [8067751]
+      result1, result2, result3 = snipe[1], snipe[2], snipe[3]
+      if result1
+        listing = result1.sub("/","")
+      elsif result2
+        listing = result2
+      elsif result3
+        listing = result3
+      end
     end
-    return listing
+      
   end
+
 end
 

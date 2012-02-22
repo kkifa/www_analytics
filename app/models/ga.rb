@@ -73,7 +73,7 @@ end
 def listing_snipe(listing_url)
   snipe = listing_url.match(/\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/)
   if snipe
-    listing = [8067751]
+    listing = 8067751
   end
   return listing
 end

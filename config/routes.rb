@@ -4,7 +4,9 @@ WwwAnalytics::Application.routes.draw do
   match "/agents" => "ga#agents"
   match "/show" => "ga#show"
   match "/reports" => "ga#report"
-
+  match "/reports/listing/:listingid" => "ga#listing", :as => :listing
+  match "/reports/listing" => "ga#listing"
+  
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
