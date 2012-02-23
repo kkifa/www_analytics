@@ -8,6 +8,7 @@ gem 'rails', '3.1.3'
 gem 'sqlite3'
 gem 'pg', '0.11.0', :require => 'pg'
 gem 'gritter'
+gem 'geocoder'
 
 # gem 'garb'
 # gem 'garb', :git => "https://github.com/seomoz/garb.git" # log in erro

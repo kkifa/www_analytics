@@ -52,4 +52,8 @@ module GaHelper
     return date_oriented_result[0].to_s + " page views: " + date_oriented_result[1].to_s + " unique views: " + date_oriented_result[2].to_s
   end
   
+  def visitor_pin_map(visitors_pins)
+    map_params = visitors_pins.map{|geo| geo.join("%2C")}.join("|")
+    "http://maps.google.com/maps/api/staticmap?size=450x300&sensor=false&markers=" + map_params
+  end
 end

@@ -13,7 +13,7 @@ class GaController < ApplicationController # before_filter :profiles_list
       @listings = @report.listings
 
       if @results.count == 0
-        render :nothing => true
+        redirect_to reports_path
         gflash :warning => "Found zero results for the given search criteria."
       else
         aggregate_listings
@@ -33,9 +33,10 @@ class GaController < ApplicationController # before_filter :profiles_list
     # @results = Report.new(params[:report])
     @report = Report.new(params)
     @results = @report.results
-    @listing = @report.listings
+    @listing = @report.listings.first
     @agent   = @report.agent
     @columns = @report.columns
+    @visitor_map = @report.results.map{|x| [x.latitude, x.longitude]}
     gflash  :success => {:value =>  "OOOHHH YEAH!!!! Listing report for #{@listing.location.address}", :image => @listing.images.first["thumb_url"]}
   end
 
@@ -64,11 +65,11 @@ class GaController < ApplicationController # before_filter :profiles_list
     if snipe
       result1, result2, result3 = snipe[1], snipe[2], snipe[3]
       if result1
-        listing = result1.sub("/","")
+        listingid = result1.sub("/","")
       elsif result2
-        listing = result2
+        listingid = result2
       elsif result3
-        listing = result3
+        listingid = result3
       end
     end
       

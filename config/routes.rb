@@ -3,7 +3,7 @@ WwwAnalytics::Application.routes.draw do
   # first created -> highest priority.
   match "/agents" => "ga#agents"
   match "/show" => "ga#show"
-  match "/reports" => "ga#report"
+  match "/reports" => "ga#report", :as => :reports
   match "/reports/listing/:listingid" => "ga#listing", :as => :listing
   match "/reports/listing" => "ga#listing"
   
