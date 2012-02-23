@@ -38,7 +38,7 @@ class Ga < ActiveRecord::Base
   end
 
 
-end
+  end
 
 def param_to_class(report)
   report.split.collect {|x| x.capitalize}.join
@@ -67,9 +67,6 @@ def get_office_listings(office_id)
   listings_to_filters(listings)
 end
 
-
-def date_range()
-end
 def listing_snipe(listing_url)
   snipe = listing_url.match(/\/listing(\/[\w\-]+){4}|\/listings\/(\d{7,})\/gallery(\?refer=map)?/)
   if snipe
@@ -78,11 +75,3 @@ def listing_snipe(listing_url)
   return listing
 end
 
-module Fields
-  def fields
-    @table.keys
-  end
-end
-class OpenStruct
-  include Fields
-end 

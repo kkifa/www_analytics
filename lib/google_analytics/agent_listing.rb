@@ -1,5 +1,5 @@
 module GoogleAnalytics
-  class AgentListings
+  class AgentListing
     extend Garb::Model
     dimensions :page_path, :date
     metrics  :pageviews, :unique_pageviews

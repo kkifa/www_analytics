@@ -25,33 +25,18 @@
         = submit_tag "Submit"
 
   %table.span12.columns
-    - if @listing
-      %tr
-        %td
-          %div{:style => "width:150px;"}
-            =image_tag @listing.images.first["thumb_url"]
-            %br
-            =@listing.listingid
-            %br
-            =@listing.location.address
-            %br
-            ="#{@listing.location.city}, #{@listing.location.state}"
-            %br
-            %span{:style => "font-weight:bold;"}
-              =number_to_currency(@listing.list_price, :precision => 0)
-        %td
-          %div{ :id => "stats_#{@listing.listingid}" }
-        -#%td
-        -#  =@results.map{|result| result.send(:pageviews).to_i if result.uuid.to_i == listing.listingid.to_i }.compact!.sum
-        -#%td
-        -#  =@results.map{|result| result.send(:unique_pageviews).to_i if result.uuid == listing.listingid}.compact!.sum
-        -# %td
-          =link_to  "detailed listing analytics", "#"
-          -# -@date_dimension.each do |date|
-            %a{href: "#",  data: {date: "#{date[:date]}", pageviews: "#{date[:value][:pageviews]}", unique_pageviews: "#{date[:value][:unique_pageviews]}"} }
-          -@results.each do |result|
-            - result.date_dimension do |date|
-              %li{href: "#",  style: "display: none;", data: {date: "#{date[:date]}", pageviews: "#{date[:value][:pageviews]}", unique_pageviews: "#{date[:value][:unique_pageviews]}"} }
+    %tr
+      %td
+        %div
+          =image_tag @listing.images.first["full_url"]
+          %br
+            %h2
+              =@listing.location.address
+            %h2
+              ="#{@listing.location.city}, #{@listing.location.state}"
+            %h2
+              %span{:style => "font-weight:bold;"}
+                =number_to_currency(@listing.list_price, :precision => 0)
   - if @columns
     %fieldset
       .results
@@ -161,5 +146,5 @@
     }
 -#= debug @stuff
 -#- if defined? @results.fields
--#  = debug @results.fields
--# = debug @agent
+= debug @columns
+= debug @listing

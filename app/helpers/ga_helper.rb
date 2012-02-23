@@ -23,7 +23,7 @@ module GaHelper
     report_list = []
     Dir.foreach [Rails.root.to_s, 'lib/google_analytics'].join('/') do |file|
       unless file[0] == "."
-        report_list << file.split(".").first.gsub("_", " ")
+        report_list << file.split(".").first.humanize
       end
     end
     return report_list 

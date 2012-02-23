@@ -42,12 +42,8 @@
                 =number_to_currency(listing.list_price, :precision => 0)
           %td
             %div{ :id => "stats_#{listing.listingid}" }
-          -#%td
-          -#  =@results.map{|result| result.send(:pageviews).to_i if result.uuid.to_i == listing.listingid.to_i }.compact!.sum
-          -#%td
-          -#  =@results.map{|result| result.send(:unique_pageviews).to_i if result.uuid == listing.listingid}.compact!.sum
           %td
-            =link_to  "detailed listing analytics", "#"
+            =link_to  "detailed listing analytics", listing_path(listing.listingid)
             -# -@date_dimension.each do |date|
               %a{href: "#",  data: {date: "#{date[:date]}", pageviews: "#{date[:value][:pageviews]}", unique_pageviews: "#{date[:value][:unique_pageviews]}"} }
             -@results.each do |result|

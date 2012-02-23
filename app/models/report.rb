@@ -14,24 +14,28 @@ class Report < Garb::ResultSet
   end
 
   def query(params)
-    puts params[:listing]
     profile =  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     # if !params["report"].blank?
-    if false
-      @listing = WmsSvcConsumer::Models::Listing.find(snipe_listing_from_url('http://www.windermere.com/listing/WA/Kirkland/13245-Holmes-Point-Dr-Ne-98034/10872720'))
+    if params[:listingid]
+      @listings = Listing.find(params[:listingid])
       # @listing = WmsSvcConsumer::Models::Listing.find(snipe_listing_from_url(params["listing"]))
-      @agent = @listing.agent
-      @results = GoogleAnalytics.const_get(param_to_class(params["report"])).results(profile,
+      @agent = @listings.agent
+      @results = GoogleAnalytics.const_get(param_to_class('social media')).results(profile,
                                                                          # :filters => listings_to_filters(@listing ),
-                                                                         :filters => {:page_path.contains => @listing.listingid},
+                                                                         :filters => {:page_path.contains => @listings.listingid},
                                                                          :end_date => Date.today,
                                                                          # :start_date => Date.parse(params["start_date"])
-                                                                         :start_date => Date.parse(params[:start_date])
+                                                                         :start_date => 1.month.ago
                                                                         )
-    # elsif params["report"]["agent"]
-    elsif true
-      @agent = WmsSvcConsumer::Models::Agent.find(params["agent"])
-      @listings = WmsSvcConsumer::Models::Listing.find_all_by_agent(@agent.uuid).results
+      begin
+        @columns = arrange_columns( @results.first.fields )
+      rescue NoMethodError
+        puts "there was no value returned by analytics"
+        @columns = [:page_path, :date, :pageviews, :unique_pageviews]
+      end
+    elsif params["agent"]
+      @agent = Agent.find(params["agent"])
+      @listings = Listing.find_all_by_agent(@agent.uuid).results
       @listingsids = @listings.map(&:listingid)
       @results = filtered_results(GoogleAnalytics.const_get(param_to_class(params["report"])).results(profile,
                                                                          :filters => listings_to_filters(@listingsids),
@@ -43,6 +47,7 @@ class Report < Garb::ResultSet
         @columns = arrange_columns( @results.first.fields )
       rescue NoMethodError
         puts "there was no value returned by analytics"
+        @columns = [:page_path, :date, :pageviews, :unique_pageviews]
       end
     elsif params["report"]
       @results = googleanalytics.const_get(param_to_class(params["report"])).results(profile, 
@@ -54,7 +59,7 @@ class Report < Garb::ResultSet
       begin
         @columns = arrange_columns(@results.first.fields)
       rescue NoMethodError
-        puts "there was no value returned by analytics"
+        @columns = [:page_path, :date, :pageviews, :unique_pageviews]
       end
     end
   end
@@ -136,14 +141,21 @@ class Report < Garb::ResultSet
     end
     return extra_fields
   end
-
-end
-
-module Fields
-  def fields
-    @table.keys
+  
+  #does the same thing as aggregate_listings in controller but as a hash object
+  def set_dates(results)
+    @date_dimension = []
+    for result in results
+      stored_element = @date_dimension.detect { |element| element[:date].to_s == result.send(:date).to_s }
+      if stored_element
+        stored_element[:value][:pageviews] += result.send(:pageviews).to_i
+        stored_element[:value][:unique_pageviews] += result.send(:unique_pageviews).to_i
+      else
+        @date_dimension << {:date => result.send(:date).to_s, :value => {:pageviews => result.send(:pageviews).to_i, :unique_pageviews => result.send(:unique_pageviews).to_i} }
+      end
+      result.date_dimension = @date_dimension
+    end
   end
+
 end
-class OpenStruct
-  include Fields
-end 
+
