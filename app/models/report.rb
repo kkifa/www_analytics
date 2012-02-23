@@ -27,12 +27,7 @@ class Report < Garb::ResultSet
                                                                          # :start_date => Date.parse(params["start_date"])
                                                                          :start_date => 1.month.ago
                                                                         )
-      begin
-        @columns = arrange_columns( @results.first.fields )
-      rescue NoMethodError
-        puts "there was no value returned by analytics"
-        @columns = [:page_path, :date, :pageviews, :unique_pageviews]
-      end
+      @columns = column_generator
     elsif params["agent"]
       @agent = Agent.find(params["agent"])
       @listings = Listing.find_all_by_agent(@agent.uuid).results
@@ -43,12 +38,7 @@ class Report < Garb::ResultSet
                                                                          :start_date => Date.parse(params["start_date"])
                                                                         )
                                   )
-      begin
-        @columns = arrange_columns( @results.first.fields )
-      rescue NoMethodError
-        puts "there was no value returned by analytics"
-        @columns = [:page_path, :date, :pageviews, :unique_pageviews]
-      end
+      @columns = column_generator
     elsif params["report"]
       @results = googleanalytics.const_get(param_to_class(params["report"])).results(profile, 
                                                                          :filters =>  get_office_listings(params["office"]),
@@ -56,11 +46,7 @@ class Report < Garb::ResultSet
                                                                          :start_date => date.parse(params[:start_date])
                                                                         )
     #there is an opportunity to sort the columns below
-      begin
-        @columns = arrange_columns(@results.first.fields)
-      rescue NoMethodError
-        @columns = [:page_path, :date, :pageviews, :unique_pageviews]
-      end
+      @columns = column_generator
     end
   end
 
@@ -114,9 +100,9 @@ class Report < Garb::ResultSet
     if snipe
       result1, result2, result3 = snipe[1], snipe[2], snipe[3]
       if result1
-        listing = result1.sub("/","")
+        listingid = result1.sub("/","")
       elsif result2
-        listing = result2
+        listingid = result2
       elsif result3
         listing = result3
       end
@@ -157,5 +143,13 @@ class Report < Garb::ResultSet
     end
   end
 
+  def column_generator
+    begin
+      @columns = arrange_columns( @results.first.fields )
+    rescue NoMethodError
+      puts "there was no value returned by analytics"
+      @columns = [:page_path, :date, :pageviews, :unique_pageviews]
+    end
+  end
 end
 
