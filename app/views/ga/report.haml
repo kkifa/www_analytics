@@ -1,12 +1,26 @@
+#spinner_modal.modal{:style => "display:none"}
+  .modal-header
+    %a.close{"data-dismiss" => "modal"}
+      ×
+    %h3
+      Loading...
+  .modal-body{:style => "height:100px; text-align:center;"}
+    = image_tag "ajax-loader.gif", :style => "margin-top:40px"
+  .modal-footer
+    -#%a.btn.btn-primary{:href => "#"}
+      Save changes
+    -#%a.btn{:href => "#"}
+      Close
+
 #gritter-notice-wrapper{style: "right: 400px;"}
   = gflash
 .content.span16.columns
-  .pull-right{:style => "margin-top: -20px;"}
-    = image_tag "koolaid-good.png"
+  -#.pull-right{:style => "margin-top: -20px;"}
+    -#= image_tag "koolaid-good.png"
   %h1
-    #{@office.name} 
+    Analytics Page for #{@office.name}
   %h3
-    Analytics Reporting Page
+    = @agent.display_name
   %fieldset
     = form_tag :controller => 'ga', :action => 'report' do
       .form-stacked
@@ -22,7 +36,7 @@
         = label :report, "Time range"
         = select :report, :start_date, options_for_select([ ["one day", "#{1.day.ago.to_date}"], ["one week", "#{1.week.ago.to_date}"], ["two weeks","#{2.weeks.ago.to_date}"], ["one month","#{1.month.ago.to_date}"], ["three month","#{3.months.ago.to_date}"], ["six months","#{6.months.ago.to_date}"] ], selected: 1.month.ago.to_date)
         = hidden_field :report, :office, value: @office.uuid
-        = submit_tag "Submit"
+        = submit_tag "Submit", :onclick => "show_spinner()"
 
   %table.span12.columns
     - if @listings
@@ -32,7 +46,7 @@
             %div{:style => "width:150px;"}
               =image_tag listing.image.first["thumb_url"]
               %br
-              =listing.listingid
+              MLS: #{listing.mlsnumber}
               %br
               =listing.location.address
               %br
@@ -84,22 +98,22 @@
       - date_visits_hash = listing[1]
       = "var listing_views_#{listing_id} = ["
       - date_visits_hash.each do |date, values|
-        -#= "['#{Date.parse(date).month}/#{Date.parse(date).day}', #{values[1]}, #{values[0] - values[1]}],"
         = "['#{Date.parse(date).month}/#{Date.parse(date).day}', #{values[0]}, #{values[1]}, #{values[2]}],"
       = "]"
 
 
-      = "var title = \'Page Views for #{listing_id}\';"
+      = "var title = \'Listing Page Views by Day\';"
       = "var data_site_visits = new google.visualization.DataTable();"
       = "data_site_visits.addColumn('string', 'Date');"
       = "data_site_visits.addColumn('number', 'Map');"
       = "data_site_visits.addColumn('number', 'Gallery');"
-      = "data_site_visits.addColumn('number', 'URL');"
+      = "data_site_visits.addColumn('number', 'Direct');"
       = "data_site_visits.addRows( listing_views_#{listing_id} );"
 
       = "// Set chart options"
       = "var options = {"
       = " 'title': title,"
+      -#= " 'colors': ['#003399', '#336699', '#66CCFF', '#3399FF', '#99CCFF'],"
       = " 'width':700,"
       = " 'height':220,"
       = " 'isStacked':true"

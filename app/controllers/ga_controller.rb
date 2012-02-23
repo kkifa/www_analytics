@@ -17,7 +17,7 @@ class GaController < ApplicationController # before_filter :profiles_list
         gflash :warning => "Found zero results for the given search criteria."
       else
         aggregate_listings
-        gflash  :success => {:value =>  "OOOHHH YEAH!!!! Listing report for #{@agent.display_name}", :image => @agent.image.first["thumb_url"]}
+        #gflash  :success => {:value =>  "OOOHHH YEAH!!!! Listing report for #{@agent.display_name}", :image => @agent.image.first["thumb_url"]}
       end
       #@columns = @results.first.fields
       end
@@ -78,13 +78,8 @@ class GaController < ApplicationController # before_filter :profiles_list
     @columns = @report.columns
     @listings.each { |listing|
       @date_visits = Hash.new(0)
-      unique_visits = 0
-      total_visits = 0
       @results.each{ |result|
         if result.send(@columns[0]).include? listing.listingid.to_s
-          unique_visits += result.send(@columns[3]).to_i
-          total_visits += result.send(@columns[2]).to_i
-
           visits = @date_visits[result.send(@columns[1])]
           if visits == 0
             visits = Array.new
