@@ -14,7 +14,7 @@ class GaController < ApplicationController # before_filter :profiles_list
 
       if @results.count == 0
         redirect_to reports_path
-        gflash :warning => "Found zero results for the given search criteria."
+        gflash :warning => "Found zero results for #{@agent.display_name}."
       else
         aggregate_listings
         #gflash  :success => {:value =>  "OOOHHH YEAH!!!! Listing report for #{@agent.display_name}", :image => @agent.image.first["thumb_url"]}

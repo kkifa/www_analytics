@@ -20,23 +20,31 @@
   %h1
     Analytics Page for #{@office.name}
   %h3
-    = @agent.display_name
+    - unless @agent.nil?
+      = @agent.display_name
   %fieldset
     = form_tag :controller => 'ga', :action => 'report' do
       .form-stacked
-        = label :report, "Choose a report"
-        = select :report, :report, reports_list(), {}
-        %br
-        = label :report, "Search by agent"
-        = select :report, :agent, agents_with_listings_list()#, {include_blank: "Whole Office"}
-        %br
-        = label :report, "Search for a listing from URL"
-        = text_field :report, :listing, :value => ""
-        %br
-        = label :report, "Time range"
-        = select :report, :start_date, options_for_select([ ["one day", "#{1.day.ago.to_date}"], ["one week", "#{1.week.ago.to_date}"], ["two weeks","#{2.weeks.ago.to_date}"], ["one month","#{1.month.ago.to_date}"], ["three month","#{3.months.ago.to_date}"], ["six months","#{6.months.ago.to_date}"] ], selected: 1.month.ago.to_date)
-        = hidden_field :report, :office, value: @office.uuid
-        = submit_tag "Submit", :onclick => "show_spinner()"
+        %table
+          %tr
+            %td
+              = label :report, "Choose a report"
+              = select :report, :report, reports_list(), {}
+            %td
+              = label :report, "Search by agent"
+              = select :report, :agent, agents_with_listings_list()#, {include_blank: "Whole Office"}
+          %tr
+            %td
+              = label :report, "Search for a listing from URL"
+              = text_field :report, :listing, :value => ""
+            %td
+              = label :report, "Time range"
+              = select :report, :start_date, options_for_select([ ["one day", "#{1.day.ago.to_date}"], ["one week", "#{1.week.ago.to_date}"], ["two weeks","#{2.weeks.ago.to_date}"], ["one month","#{1.month.ago.to_date}"], ["three month","#{3.months.ago.to_date}"], ["six months","#{6.months.ago.to_date}"] ], selected: 1.month.ago.to_date)
+          %tr
+            %td
+              = hidden_field :report, :office, value: @office.uuid
+              = submit_tag "Submit", :onclick => "show_spinner()"
+            %td
 
   %table.span12.columns
     - if @listings
