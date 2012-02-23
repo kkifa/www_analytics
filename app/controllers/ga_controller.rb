@@ -4,7 +4,7 @@ class GaController < ApplicationController # before_filter :profiles_list
     @title = "Windermere analytics test report"
     unless params[:report].nil?
       if !params[:report]['listing'].blank?
-        redirect_to reports_listing_path(params)
+        redirect_to listing_path(:listingid => listing_snipe(params[:report][:listing]))
         return 
       else
       @report = Report.new(params[:report])
