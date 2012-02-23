@@ -33,9 +33,10 @@ class GaController < ApplicationController # before_filter :profiles_list
     # @results = Report.new(params[:report])
     @report = Report.new(params)
     @results = @report.results
-    @listing = @report.listings
+    @listing = @report.listings.first
     @agent   = @report.agent
     @columns = @report.columns
+    @visitor_map = @report.results.map{|x| [x.latitude, x.longitude]}
     gflash  :success => {:value =>  "OOOHHH YEAH!!!! Listing report for #{@listing.location.address}", :image => @listing.images.first["thumb_url"]}
   end
 

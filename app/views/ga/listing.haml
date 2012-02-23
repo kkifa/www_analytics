@@ -27,7 +27,7 @@
   %table.span12.columns
     %tr
       %td
-        %div
+        %div.pull-left
           =image_tag @listing.images.first["full_url"]
           %br
             %h2
@@ -37,6 +37,8 @@
             %h2
               %span{:style => "font-weight:bold;"}
                 =number_to_currency(@listing.list_price, :precision => 0)
+  %a.btn{href: "#map" , :data =>  {toggle: "modal", target: "#map"}}
+    Map of viewers
   - if @columns
     %fieldset
       .results
@@ -148,3 +150,13 @@
 -#- if defined? @results.fields
 = debug @columns
 = debug @listing
+#map.modal.fade
+  .modal-header
+    =link_to "x", "#", class: "close", "data-dismiss" => "modal"
+    %h3
+      Analytics: visitor mapping
+  .modal-body
+    = image_tag visitor_pin_map(@visitor_map)
+  .modal-footer
+    =link_to "Continue to Analytics",@redirect, class: "btn btn-primary"
+    =link_to "close", "#", class: "btn"

@@ -17,17 +17,21 @@ class Report < Garb::ResultSet
     profile =  Garb::Management::Profile.all.detect{|p| p.web_property_id == "UA-384279-1"}
     # if !params["report"].blank?
     if params[:listingid]
-      @listings = Listing.find(params[:listingid])
+      # only on listing but creating an array for use in methods below
+      @listings = Array.new(1, Listing.find(params[:listingid]) )
       # @listing = WmsSvcConsumer::Models::Listing.find(snipe_listing_from_url(params["listing"]))
-      @agent = @listings.agent
-      @results = GoogleAnalytics.const_get(param_to_class('social media')).results(profile,
+      @agent = @listings.first.agent
+      @listingsids = @listings.map(&:listingid)
+      @results = filtered_results(GoogleAnalytics.const_get(param_to_class('social media')).results(profile,
                                                                          # :filters => listings_to_filters(@listing ),
-                                                                         :filters => {:page_path.contains => @listings.listingid},
+                                                                         :filters => {:page_path.contains => @listingsids.first},
                                                                          :end_date => Date.today,
                                                                          # :start_date => Date.parse(params["start_date"])
                                                                          :start_date => 1.month.ago
                                                                         )
+                                  )
       @columns = column_generator
+
     elsif params["agent"]
       @agent = Agent.find(params["agent"])
       @listings = Listing.find_all_by_agent(@agent.uuid).results
@@ -39,6 +43,7 @@ class Report < Garb::ResultSet
                                                                         )
                                   )
       @columns = column_generator
+
     elsif params["report"]
       @results = googleanalytics.const_get(param_to_class(params["report"])).results(profile, 
                                                                          :filters =>  get_office_listings(params["office"]),
@@ -83,7 +88,7 @@ class Report < Garb::ResultSet
 
   #assigns uuid to results
   def assign_uuid_to_result(filtered_results)
-    filtered_results.class.instance_eval('attr_accessor :uuid, :date_dimension')
+    filtered_results.class.instance_eval('attr_accessor :uuid, :date_dimension, :latitude, :longitude')
     @listingsids.each do |id|
       filtered_results.each do |listing|
         if listing.send(:page_path).match(/#{id}/)
@@ -109,10 +114,6 @@ class Report < Garb::ResultSet
     end
   end
 
-  def get_agent(agent)
-    @agent ||= wmssvcconsumer::models::agent.find(agent)
-  end
-
   def param_to_class(report)
     report.split.collect {|x| x.capitalize}.join
   end
@@ -130,18 +131,20 @@ class Report < Garb::ResultSet
   
   #does the same thing as aggregate_listings in controller but as a hash object
   def set_dates(results)
-    @date_dimension = []
+    date_dimension = []
     for result in results
-      stored_element = @date_dimension.detect { |element| element[:date].to_s == result.send(:date).to_s }
+      stored_element = date_dimension.detect { |element| element[:date].to_s == result.send(:date).to_s }
       if stored_element
         stored_element[:value][:pageviews] += result.send(:pageviews).to_i
         stored_element[:value][:unique_pageviews] += result.send(:unique_pageviews).to_i
       else
-        @date_dimension << {:date => result.send(:date).to_s, :value => {:pageviews => result.send(:pageviews).to_i, :unique_pageviews => result.send(:unique_pageviews).to_i} }
+        date_dimension << {:date => result.send(:date).to_s, :value => {:pageviews => result.send(:pageviews).to_i, :unique_pageviews => result.send(:unique_pageviews).to_i} }
       end
-      result.date_dimension = @date_dimension
+      result.date_dimension = date_dimension
     end
   end
+
+
 
   def column_generator
     begin
